@@ -4,6 +4,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.util.List;
+
 public class SessionFactoryProvider {
 	
 	private static SessionFactoryProvider INSTANCE;
@@ -33,5 +35,7 @@ public class SessionFactoryProvider {
 	public Session createSession() {
 		return this.sessionFactory.openSession();
 	}
+
+
 
 }

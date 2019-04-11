@@ -9,8 +9,11 @@ import ar.edu.unq.unidad3.wop.modelo.exception.MuchoPesoException;
 
 @Entity
 public class Personaje {
-	
+
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
 	private String nombre;
 
 	@Column(name="hist", length=100000)
@@ -61,7 +64,15 @@ public class Personaje {
 	public void setVida(int vida) {
 		this.vida = vida;
 	}
-	
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public Set<Item> getInventario() {
 		return this.inventario;
 	}

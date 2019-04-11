@@ -7,7 +7,7 @@ import org.hibernate.query.Query;
 
 import ar.edu.unq.unidad3.wop.dao.ItemDAO;
 import ar.edu.unq.unidad3.wop.modelo.Item;
-import ar.edu.unq.unidad3.wop.service.runner.Runner;
+import ar.edu.unq.unidad3.wop.service.runner.TransactionRunner;
 
 /**
  * Una implementacion de {@link ItemDAO} que persiste
@@ -15,23 +15,15 @@ import ar.edu.unq.unidad3.wop.service.runner.Runner;
  * 
  * @author Claudio Fernandez
  */
-public class HibernateItemDAO implements ItemDAO {
+public class HibernateItemDAO extends HibernateDAO<Item> implements ItemDAO {
 
-	@Override
-	public void guardar(Item item) {
-		Session session = Runner.getCurrentSession();
-		session.save(item);
-	}
-
-	@Override
-	public Item recuperar(String nombre) {
-		Session session = Runner.getCurrentSession();
-		return session.get(Item.class, nombre);
+	public HibernateItemDAO() {
+		super(Item.class);
 	}
 	
 	@Override
 	public Collection<Item> getAll() {
-		Session session = Runner.getCurrentSession();
+		Session session = TransactionRunner.getCurrentSession();
 		
 		String hql = "from Item i "
 				+ "order by i.peso asc";
@@ -42,7 +34,7 @@ public class HibernateItemDAO implements ItemDAO {
 	
 	@Override
 	public Collection<Item> getMasPesados(int peso) {
-		Session session = Runner.getCurrentSession();
+		Session session = TransactionRunner.getCurrentSession();
 		
 		String hql = "from Item i "
 				+ "where i.peso > :unValorDado "
@@ -56,7 +48,7 @@ public class HibernateItemDAO implements ItemDAO {
 	
 	@Override
 	public Collection<Item> getItemsDePersonajesDebiles(int unaVida) {
-		Session session = Runner.getCurrentSession();
+		Session session = TransactionRunner.getCurrentSession();
 		
 		String hql = "from Item i "
 				+ "where i.owner.vida < :unaVida "
@@ -70,7 +62,7 @@ public class HibernateItemDAO implements ItemDAO {
 	
 	@Override
 	public Item getHeaviestItem() {
-		Session session = Runner.getCurrentSession();
+		Session session = TransactionRunner.getCurrentSession();
 		
 		String hql = "from Item i order by i.peso desc";
 		

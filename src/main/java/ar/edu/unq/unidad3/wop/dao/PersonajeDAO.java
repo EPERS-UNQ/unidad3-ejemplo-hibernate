@@ -10,6 +10,6 @@ public interface PersonajeDAO {
 
 	void guardar(Personaje personaje);
 	
-	Personaje recuperar(String nombre);
+	Personaje recuperar(Long id);
 	
 }

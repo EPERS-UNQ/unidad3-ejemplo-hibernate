@@ -12,7 +12,7 @@ public interface ItemDAO {
 
 	void guardar(Item personaje);
 	
-	Item recuperar(String nombre);
+	Item recuperar(Long id);
 
 	Collection<Item> getAll();
 
