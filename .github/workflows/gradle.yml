@@ -1,0 +1,50 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+on:
+  # Sequence of patterns matched against refs/tags
+  push:
+    tags:
+      - "*" # Push events to matching v*, i.e. v1.0, v20.15.10
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+      - name: Run tests
+        run: ./gradlew test
+        env:
+          USER: ${{ secrets.USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          DATA_BASE: ${{ secrets.DATA_BASE }}
+          HOST: ${{ secrets.HOST }}
+      - name: Success Notification
+        if: success()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: ${{github.repository}}
+          DISCORD_AVATAR: https://www.iconsdb.com/icons/preview/green/github-9-xxl.png
+        uses: Ilshidur/action-discord@master
+        with:
+          args: ':green_circle: Entrega existosa para el proyecto {{ EVENT_PAYLOAD.repository.name }}  por {{ EVENT_PAYLOAD.sender.login }}'
+      - name: Failure Notification
+        if: failure()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: ${{github.repository}}
+          DISCORD_AVATAR: https://www.iconsdb.com/icons/preview/red/github-10-xxl.png
+        uses: Ilshidur/action-discord@master
+        with:
+          args: ':red_circle: Entrega fallida para el proyecto {{ EVENT_PAYLOAD.repository.name }} por {{ EVENT_PAYLOAD.sender.login }}'

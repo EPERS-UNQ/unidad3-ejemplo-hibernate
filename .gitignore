@@ -4,4 +4,6 @@
 /target
 /data/*
 .idea/
+.gradle/
+build/*
 world-of-persistence.iml
