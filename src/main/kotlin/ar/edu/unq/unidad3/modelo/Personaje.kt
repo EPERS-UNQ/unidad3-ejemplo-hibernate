@@ -10,6 +10,7 @@ class Personaje() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+    @Column(nullable = false, length = 500)
     var nombre: String? = null
     var vida: Int = 0
     var pesoMaximo: Int = 0
@@ -17,9 +18,10 @@ class Personaje() {
     @OneToMany(mappedBy = "owner", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     var inventario: MutableSet<Item> = HashSet()
 
-    val pesoActual: Int = inventario.sumBy { it.peso }
+    val pesoActual: Int
+        get() = inventario.sumBy { it.peso }
 
-    constructor(nombre: String):this() {
+    constructor(nombre: String) : this() {
         this.nombre = nombre
     }
 

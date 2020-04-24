@@ -6,6 +6,7 @@ import ar.edu.unq.unidad3.dao.impl.HibernatePersonajeDAO
 import ar.edu.unq.unidad3.modelo.Item
 import ar.edu.unq.unidad3.modelo.Personaje
 import ar.edu.unq.unidad3.service.InventarioService
+import ar.edu.unq.unidad3.service.InventarioServiceImp
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -21,7 +22,7 @@ class InventarioServiceTest {
 
     @Before
     fun prepare() {
-        this.service = InventarioService(
+        this.service = InventarioServiceImp(
             HibernatePersonajeDAO(),
             HibernateItemDAO(),
             HibernateDataDAO()
@@ -45,14 +46,6 @@ class InventarioServiceTest {
         service.guardarPersonaje(debilucho)
     }
 
-    @After
-    fun cleanup() {
-        //Destroy cierra la session factory y fuerza a que, la proxima vez, una nueva tenga
-        //que ser creada.
-        service.clear()
-    }
-
-
     @Test
     fun testRecoger() {
         service.recoger(maguin.id, baculo.id)
@@ -70,7 +63,7 @@ class InventarioServiceTest {
 
     @Test
     fun testGetAll() {
-        val items = service.allItems
+        val items = service.allItems()
 
         Assert.assertEquals(2, items.size.toLong())
         Assert.assertTrue(items.contains(baculo))
@@ -101,8 +94,15 @@ class InventarioServiceTest {
 
     @Test
     fun testGetMasPesado() {
-        val item = service.heaviestItem
+        val item = service.heaviestItem()
         Assert.assertEquals("Tunica", item.nombre)
+    }
+
+    @After
+    fun cleanup() {
+        //Destroy cierra la session factory y fuerza a que, la proxima vez, una nueva tenga
+        //que ser creada.
+        service.clear()
     }
 
 }
