@@ -17,18 +17,33 @@ object TransactionRunner {
 
     fun <T> runTrx(bloque: ()->T): T {
         session = SessionFactoryProvider.instance.createSession()
-        session.use {
-            val tx =  session!!.beginTransaction()
-            try {
-                //codigo de negocio
-                val resultado = bloque()
-                tx!!.commit()
-                return resultado
-            } catch (e: RuntimeException) {
-                tx.rollback()
-                throw e
+        return session.use {
+            val result = session!!.useTransaction{
+                bloque()
             }
+            session = null
+            result
         }
-        session = null
+    }
+}
+
+
+public inline fun <T : EntityTransaction, R> T.useTransaction(block: () -> R): R {
+    try {
+        //codigo de negocio
+        val resultado = block()
+        commit()
+        return resultado
+    } catch (e: RuntimeException) {
+        rollback()
+        throw e
+    }
+}
+
+
+public inline fun <T : Session, R> T.useTransaction(block: () -> R): R {
+    use {
+        val tx =  beginTransaction()
+        return tx.useTransaction(block)
     }
 }

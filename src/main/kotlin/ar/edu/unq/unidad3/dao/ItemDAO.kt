@@ -12,7 +12,7 @@ interface ItemDAO {
 
     val heaviestItem: Item
 
-    fun guardar(personaje: Item)
+    fun guardar(item: Item)
 
     fun recuperar(id: Long?): Item
 

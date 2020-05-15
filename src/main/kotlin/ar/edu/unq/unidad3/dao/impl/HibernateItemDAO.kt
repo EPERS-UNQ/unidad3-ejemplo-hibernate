@@ -11,18 +11,21 @@ open class HibernateItemDAO : HibernateDAO<Item>(Item::class.java),
         get() {
         val session = TransactionRunner.currentSession
 
-        val hql = "from Item i " + "order by i.peso asc"
+        val hql = "select i from Item i order by i.peso asc"
 
         val query = session.createQuery(hql, Item::class.java)
+
         return query.resultList
     }
 
     override fun getMasPesados(peso: Int): Collection<Item> {
         val session = TransactionRunner.currentSession
 
-        val hql = ("from Item i "
-                + "where i.peso > :unValorDado "
-                + "order by i.peso asc")
+        val hql = """
+                    from Item i
+                    where i.peso > :unValorDado 
+                    order by i.peso asc
+        """
 
         val query = session.createQuery(hql, Item::class.java)
         query.setParameter("unValorDado", peso)
