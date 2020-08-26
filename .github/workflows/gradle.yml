@@ -29,10 +29,10 @@ jobs:
       - name: Run tests
         run: ./gradlew test -i
         env:
-          USER: ${{ secrets.USER }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          DATA_BASE: ${{ secrets.DATA_BASE }}
-          HOST: ${{ secrets.HOST }}
+          HIBERNATE_DIALECT: org:hibernate:dialect:H2Dialect
+          SQL_URL: jdbc:h2:mem:test
+          SQL_DRIVER: org:h2:Driver
+
       - name: Success notification
         if: success()
         env:

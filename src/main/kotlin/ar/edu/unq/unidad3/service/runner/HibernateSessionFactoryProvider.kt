@@ -10,10 +10,11 @@ class HibernateSessionFactoryProvider private constructor() {
 
     init {
         val env = System.getenv()
-        val user = env.getOrDefault("SQL_USER", "root")
-        val password = env.getOrDefault("SQL_PASSWORD", "root")
-        val dataBase = env.getOrDefault("SQL_DATA_BASE", "epers_ejemplo_hibernate")
-        val host = env.getOrDefault("SQL_HOST", "localhost")
+        val user = "root"
+        val password = "root"
+        val dataBase = "epers_ejemplo_hibernate"
+        val host = "localhost"
+
         val url = env.getOrDefault("SQL_URL", "jdbc:mysql://$host:3306/$dataBase?createDatabaseIfNotExist=true&serverTimezone=UTC")
         val dialect = env.getOrDefault("HIBERNATE_DIALECT", "org.hibernate.dialect.MySQL8Dialect")
         val driver = env.getOrDefault("SQL_DRIVER", "com.mysql.cj.jdbc.Driver")
