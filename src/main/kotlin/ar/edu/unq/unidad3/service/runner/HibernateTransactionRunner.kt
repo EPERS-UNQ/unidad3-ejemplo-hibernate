@@ -3,20 +3,21 @@ package ar.edu.unq.unidad3.service.runner
 import org.hibernate.Session
 import javax.persistence.EntityTransaction
 
-object TransactionRunner {
-    private var session: Session? = null
+object HibernateTransactionRunner {
+    private var sessionThreadLocal: ThreadLocal<Session?> = ThreadLocal()
 
     val currentSession: Session
         get() {
-            if (session == null) {
+            if (sessionThreadLocal.get() == null) {
                 throw RuntimeException("No hay ninguna session en el contexto")
             }
-            return session!!
+            return sessionThreadLocal.get()!!
         }
 
 
     fun <T> runTrx(bloque: ()->T): T {
-        session = SessionFactoryProvider.instance.createSession()
+        val session = HibernateSessionFactoryProvider.instance.createSession()
+        sessionThreadLocal.set(session)
         session.use {
             val tx =  session!!.beginTransaction()
             try {
@@ -27,8 +28,9 @@ object TransactionRunner {
             } catch (e: RuntimeException) {
                 tx.rollback()
                 throw e
+            }finally {
+                sessionThreadLocal.set(null)
             }
         }
-        session = null
     }
 }

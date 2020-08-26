@@ -2,27 +2,30 @@ package ar.edu.unq.unidad3.dao.impl
 
 import ar.edu.unq.unidad3.dao.ItemDAO
 import ar.edu.unq.unidad3.modelo.Item
-import ar.edu.unq.unidad3.service.runner.TransactionRunner
+import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner
 
 open class HibernateItemDAO : HibernateDAO<Item>(Item::class.java),
     ItemDAO {
 
     override val all: Collection<Item>
         get() {
-        val session = TransactionRunner.currentSession
+        val session = HibernateTransactionRunner.currentSession
 
-        val hql = "from Item i " + "order by i.peso asc"
+        val hql = "select i from Item i order by i.peso asc"
 
         val query = session.createQuery(hql, Item::class.java)
+
         return query.resultList
     }
 
     override fun getMasPesados(peso: Int): Collection<Item> {
-        val session = TransactionRunner.currentSession
+        val session = HibernateTransactionRunner.currentSession
 
-        val hql = ("from Item i "
-                + "where i.peso > :unValorDado "
-                + "order by i.peso asc")
+        val hql = """
+                    from Item i
+                    where i.peso > :unValorDado 
+                    order by i.peso asc
+        """
 
         val query = session.createQuery(hql, Item::class.java)
         query.setParameter("unValorDado", peso)
@@ -31,7 +34,7 @@ open class HibernateItemDAO : HibernateDAO<Item>(Item::class.java),
     }
 
     override fun getItemsDePersonajesDebiles(unaVida: Int): Collection<Item> {
-        val session = TransactionRunner.currentSession
+        val session = HibernateTransactionRunner.currentSession
 
         val hql = ("from Item i "
                 + "where i.owner.vida < :unaVida "
@@ -45,7 +48,7 @@ open class HibernateItemDAO : HibernateDAO<Item>(Item::class.java),
 
     override val heaviestItem: Item
         get() {
-        val session = TransactionRunner.currentSession
+        val session = HibernateTransactionRunner.currentSession
 
         val hql = "from Item i order by i.peso desc"
 
