@@ -4,23 +4,27 @@ import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.hibernate.cfg.Configuration
 
-class SessionFactoryProvider private constructor() {
+class HibernateSessionFactoryProvider private constructor() {
 
     private val sessionFactory: SessionFactory?
 
     init {
         val env = System.getenv()
-        val user = env.getOrDefault("USER", "root")
-        val password = env.getOrDefault("PASSWORD", "root")
-        val dataBase = env.getOrDefault("DATA_BASE", "epers_ejemplo_hibernate")
-        val host = env.getOrDefault("HOST", "localhost")
-
+        val user = env.getOrDefault("SQL_USER", "root")
+        val password = env.getOrDefault("SQL_PASSWORD", "root")
+        val dataBase = env.getOrDefault("SQL_DATA_BASE", "epers_ejemplo_hibernate")
+        val host = env.getOrDefault("SQL_HOST", "localhost")
+        val url = env.getOrDefault("SQL_URL", "jdbc:mysql://$host:3306/$dataBase?createDatabaseIfNotExist=true&serverTimezone=UTC")
+        val dialect = env.getOrDefault("HIBERNATE_DIALECT", "org.hibernate.dialect.MySQL8Dialect")
+        val driver = env.getOrDefault("SQL_DRIVER", "com.mysql.cj.jdbc.Driver")
 
         val configuration = Configuration()
         configuration.configure("hibernate.cfg.xml")
         configuration.setProperty("hibernate.connection.username", user)
         configuration.setProperty("hibernate.connection.password", password)
-        configuration.setProperty("hibernate.connection.url", "jdbc:mysql://$host:3306/$dataBase?createDatabaseIfNotExist=true&serverTimezone=UTC")
+        configuration.setProperty("hibernate.connection.url", url)
+        configuration.setProperty("connection.driver_class", driver)
+        configuration.setProperty("dialect", dialect)
         this.sessionFactory = configuration.buildSessionFactory()
     }
 
@@ -30,13 +34,13 @@ class SessionFactoryProvider private constructor() {
 
     companion object {
 
-        private var INSTANCE: SessionFactoryProvider? = null
+        private var INSTANCE: HibernateSessionFactoryProvider? = null
 
-        val instance: SessionFactoryProvider
+        val instance: HibernateSessionFactoryProvider
             get() {
                 if (INSTANCE == null) {
                     INSTANCE =
-                        SessionFactoryProvider()
+                        HibernateSessionFactoryProvider()
                 }
                 return INSTANCE!!
             }
