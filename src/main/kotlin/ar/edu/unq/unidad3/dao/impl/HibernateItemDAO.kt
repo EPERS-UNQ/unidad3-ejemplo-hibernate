@@ -2,14 +2,15 @@ package ar.edu.unq.unidad3.dao.impl
 
 import ar.edu.unq.unidad3.dao.ItemDAO
 import ar.edu.unq.unidad3.modelo.Item
-import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner
+import ar.edu.unq.unidad3.service.runner.HibernateTransaction
+import ar.edu.unq.unidad3.service.runner.TransactionRunner
 
 open class HibernateItemDAO : HibernateDAO<Item>(Item::class.java),
     ItemDAO {
 
     override val all: Collection<Item>
         get() {
-        val session = HibernateTransactionRunner.currentSession
+        val session = HibernateTransaction.currentSession
 
         val hql = "select i from Item i order by i.peso asc"
 
@@ -19,7 +20,7 @@ open class HibernateItemDAO : HibernateDAO<Item>(Item::class.java),
     }
 
     override fun getMasPesados(peso: Int): Collection<Item> {
-        val session = HibernateTransactionRunner.currentSession
+        val session = HibernateTransaction.currentSession
 
         val hql = """
                     from Item i
@@ -34,7 +35,7 @@ open class HibernateItemDAO : HibernateDAO<Item>(Item::class.java),
     }
 
     override fun getItemsDePersonajesDebiles(unaVida: Int): Collection<Item> {
-        val session = HibernateTransactionRunner.currentSession
+        val session = HibernateTransaction.currentSession
 
         val hql = ("from Item i "
                 + "where i.owner.vida < :unaVida "
@@ -48,7 +49,7 @@ open class HibernateItemDAO : HibernateDAO<Item>(Item::class.java),
 
     override val heaviestItem: Item
         get() {
-        val session = HibernateTransactionRunner.currentSession
+        val session = HibernateTransaction.currentSession
 
         val hql = "from Item i order by i.peso desc"
 

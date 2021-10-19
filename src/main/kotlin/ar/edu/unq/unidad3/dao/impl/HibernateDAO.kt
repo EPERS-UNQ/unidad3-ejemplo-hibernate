@@ -1,16 +1,17 @@
 package ar.edu.unq.unidad3.dao.impl
 
-import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner
+import ar.edu.unq.unidad3.service.runner.HibernateTransaction
+import ar.edu.unq.unidad3.service.runner.TransactionRunner
 
 open class HibernateDAO<T>(private val entityType: Class<T>) {
 
     open fun guardar(entity: T) {
-        val session = HibernateTransactionRunner.currentSession
+        val session = HibernateTransaction.currentSession
         session.save(entity)
     }
 
     fun recuperar(id: Long?): T {
-        val session = HibernateTransactionRunner.currentSession
+        val session = HibernateTransaction.currentSession
         return session.get(entityType, id)
     }
 }

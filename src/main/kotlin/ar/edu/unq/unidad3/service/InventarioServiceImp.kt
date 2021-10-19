@@ -5,7 +5,7 @@ import ar.edu.unq.unidad3.dao.ItemDAO
 import ar.edu.unq.unidad3.dao.PersonajeDAO
 import ar.edu.unq.unidad3.modelo.Item
 import ar.edu.unq.unidad3.modelo.Personaje
-import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner.runTrx
+import ar.edu.unq.unidad3.service.runner.TransactionRunner.runTrx
 
 class InventarioServiceImp (
     private val personajeDAO: PersonajeDAO,
@@ -14,7 +14,9 @@ class InventarioServiceImp (
 ) : InventarioService {
 
     override fun allItems(): Collection<Item>{
-        return runTrx { itemDAO.all }
+        return runTrx {
+            itemDAO.all
+        }
     }
 
     override fun heaviestItem(): Item{

@@ -7,6 +7,8 @@ import ar.edu.unq.unidad3.modelo.Item
 import ar.edu.unq.unidad3.modelo.Personaje
 import ar.edu.unq.unidad3.service.InventarioService
 import ar.edu.unq.unidad3.service.InventarioServiceImp
+import ar.edu.unq.unidad3.service.runner.HibernateTransaction
+import ar.edu.unq.unidad3.service.runner.TransactionRunner
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
