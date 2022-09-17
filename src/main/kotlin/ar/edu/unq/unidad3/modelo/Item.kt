@@ -31,7 +31,6 @@ class Item() {
         return Objects.hash(id)
     }
 
-    override fun toString(): String {
-        return nombre!!
-    }
+    override fun toString() = nombre!!
+
 }

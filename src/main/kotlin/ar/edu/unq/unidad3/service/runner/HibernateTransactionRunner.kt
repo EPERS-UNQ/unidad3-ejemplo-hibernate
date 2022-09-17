@@ -19,11 +19,11 @@ object HibernateTransactionRunner {
         val session = HibernateSessionFactoryProvider.instance.createSession()
         sessionThreadLocal.set(session)
         session.use {
-            val tx =  session!!.beginTransaction()
+            val tx =  session.beginTransaction()
             try {
                 //codigo de negocio
                 val resultado = bloque()
-                tx!!.commit()
+                tx.commit()
                 return resultado
             } catch (e: RuntimeException) {
                 tx.rollback()
