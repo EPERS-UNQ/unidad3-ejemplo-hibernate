@@ -3,7 +3,9 @@ package ar.edu.unq.unidad3.dao
 import ar.edu.unq.unidad3.dao.impl.HibernateDataDAO
 import ar.edu.unq.unidad3.dao.impl.HibernateItemDAO
 import ar.edu.unq.unidad3.dao.impl.HibernatePersonajeDAO
+import ar.edu.unq.unidad3.modelo.Guerrero
 import ar.edu.unq.unidad3.modelo.Item
+import ar.edu.unq.unidad3.modelo.Mago
 import ar.edu.unq.unidad3.modelo.Personaje
 import ar.edu.unq.unidad3.service.InventarioService
 import ar.edu.unq.unidad3.service.InventarioServiceImp
@@ -14,8 +16,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 class InventarioServiceTest {
 
     lateinit var service: InventarioService
-    lateinit var maguin: Personaje
-    lateinit var debilucho: Personaje
+    lateinit var maguin: Mago
+    lateinit var debilucho: Guerrero
     lateinit var baculo: Item
     lateinit var tunica: Item
 
@@ -33,15 +35,17 @@ class InventarioServiceTest {
         service.guardarItem(tunica)
         service.guardarItem(baculo)
 
-        maguin = Personaje("Maguin")
+        maguin = Mago("Maguin")
         maguin.pesoMaximo = 70
         maguin.vida = 10
+        maguin.magia = 200
         service.guardarPersonaje(maguin)
 
 
-        debilucho = Personaje("Debilucho")
+        debilucho = Guerrero("Debilucho")
         debilucho.pesoMaximo = 1000
         debilucho.vida = 1
+        debilucho.fuerza = 5
         service.guardarPersonaje(debilucho)
     }
 

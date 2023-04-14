@@ -18,6 +18,9 @@
 		<property name="hibernate.hbm2ddl.auto">create-drop</property>
 
 		<mapping class="ar.edu.unq.unidad3.modelo.Personaje" />
+		<mapping class="ar.edu.unq.unidad3.modelo.Guerrero" />
+		<mapping class="ar.edu.unq.unidad3.modelo.Mago" />
+
 		<mapping class="ar.edu.unq.unidad3.modelo.Item" />
 	
 	</session-factory>

@@ -5,10 +5,14 @@ import javax.persistence.*
 import kotlin.collections.HashSet
 
 @Entity
-class Personaje() {
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+//InheritanceType.SINGLE_TABLE
+//InheritanceType.TABLE_PER_CLASS
+//InheritanceType.JOINED
+abstract class Personaje() {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     var id: Long? = null
     @Column(nullable = false, length = 500)
     var nombre: String? = null
