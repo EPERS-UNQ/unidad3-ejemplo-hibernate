@@ -19,5 +19,6 @@ interface ItemDAO {
     fun getMasPesados(peso: Int): Collection<Item>
 
     fun getItemsDePersonajesDebiles(unaVida: Int): Collection<Item>
-
+    fun recuperarPaginados(elementosPorPagina: Int, pagina: Int): Collection<Item>
+    fun contarTodos(): Int
 }

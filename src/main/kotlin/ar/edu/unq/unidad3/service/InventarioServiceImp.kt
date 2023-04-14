@@ -7,17 +7,27 @@ import ar.edu.unq.unidad3.modelo.Item
 import ar.edu.unq.unidad3.modelo.Personaje
 import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner.runTrx
 
-class InventarioServiceImp (
+class InventarioServiceImp(
     private val personajeDAO: PersonajeDAO,
     private val itemDAO: ItemDAO,
     private val dataDAO: DataDAO
 ) : InventarioService {
 
-    override fun allItems(): Collection<Item>{
+    override fun allItems(): Collection<Item> {
         return runTrx { itemDAO.all }
     }
 
-    override fun heaviestItem(): Item{
+    override fun recuperarPaginados(elementosPorPagina : Int , pagina: Int): ItemsPaginados {
+        return runTrx {
+            if (pagina == null || pagina < 0) {
+                throw RuntimeException("El número de página $pagina es menor a 0")
+            }
+            val items : Collection<Item> = itemDAO.recuperarPaginados(elementosPorPagina, pagina)
+            ItemsPaginados(items, itemDAO.contarTodos())
+        }
+    }
+
+    override fun heaviestItem(): Item {
         return runTrx { itemDAO.heaviestItem }
     }
 
@@ -54,6 +64,5 @@ class InventarioServiceImp (
     override fun clear() {
         runTrx { dataDAO.clear() }
     }
-
-
+    class ItemsPaginados(var items: Collection<Item>, var total: Int)
 }

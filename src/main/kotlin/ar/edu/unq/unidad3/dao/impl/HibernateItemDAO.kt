@@ -46,6 +46,27 @@ open class HibernateItemDAO : HibernateDAO<Item>(Item::class.java),
         return query.resultList
     }
 
+    override fun recuperarPaginados(elementosPorPagina: Int, pagina: Int): Collection<Item> {
+        val session = HibernateTransactionRunner.currentSession
+
+        val hql = "select i from Item i"
+
+        val query = session.createQuery(hql, Item::class.java)
+        query.firstResult = pagina * elementosPorPagina
+        query.maxResults = elementosPorPagina
+
+        return query.resultList
+    }
+
+    override fun contarTodos(): Int {
+        val session = HibernateTransactionRunner.currentSession
+
+        val hql = "select count (i) from Item i"
+        val query = session.createQuery(hql)
+
+        return (query.uniqueResult() as Long).toInt()
+    }
+
     override val heaviestItem: Item
         get() {
         val session = HibernateTransactionRunner.currentSession

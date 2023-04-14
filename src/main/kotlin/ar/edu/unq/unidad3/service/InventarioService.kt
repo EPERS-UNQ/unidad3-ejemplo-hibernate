@@ -2,6 +2,7 @@ package ar.edu.unq.unidad3.service
 
 import ar.edu.unq.unidad3.modelo.Item
 import ar.edu.unq.unidad3.modelo.Personaje
+import ar.edu.unq.unidad3.service.InventarioServiceImp.ItemsPaginados
 
 interface InventarioService {
     fun allItems(): Collection<Item>
@@ -12,5 +13,7 @@ interface InventarioService {
     fun recoger(personajeId: Long?, itemId: Long?)
     fun getMasPesdos(peso: Int): Collection<Item>
     fun getItemsPersonajesDebiles(vida: Int): Collection<Item>
+
+    fun recuperarPaginados(elementosPorPagina : Int , pagina: Int): ItemsPaginados
     fun clear()
 }

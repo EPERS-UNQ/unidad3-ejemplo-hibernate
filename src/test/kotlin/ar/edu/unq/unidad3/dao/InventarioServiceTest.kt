@@ -6,7 +6,6 @@ import ar.edu.unq.unidad3.dao.impl.HibernatePersonajeDAO
 import ar.edu.unq.unidad3.modelo.Guerrero
 import ar.edu.unq.unidad3.modelo.Item
 import ar.edu.unq.unidad3.modelo.Mago
-import ar.edu.unq.unidad3.modelo.Personaje
 import ar.edu.unq.unidad3.service.InventarioService
 import ar.edu.unq.unidad3.service.InventarioServiceImp
 import org.junit.jupiter.api.*
@@ -99,6 +98,50 @@ class InventarioServiceTest {
     fun testGetMasPesado() {
         val item = service.heaviestItem()
         Assertions.assertEquals("Tunica", item.nombre)
+    }
+
+    @Test
+    fun itemsPaginados() {
+        //Pagina 0
+        // Tunica y Baculo creados en el BeforeEach
+        listOf(
+            //Pagina 1
+            Item("item2", 100),
+            Item("item3", 50),
+            //Pagina 2
+            Item("item4", 100),
+            Item("item5", 50),
+            //Pagina 3
+            Item("item6", 100),
+            Item("item7", 50),
+            //Pagina 4
+            Item("item8", 100),
+            Item("item9", 50)
+        ).map { item ->
+            service.guardarItem(item)
+        }
+
+        //Recupero los elementos en la pagina 0
+        val itemsPagina0 = service.recuperarPaginados(2, 0)
+        Assertions.assertTrue(
+            itemsPagina0.items.elementAt(0).nombre.equals("Tunica")
+        )
+        Assertions.assertTrue(
+            itemsPagina0.items.elementAt(1).nombre.equals("Baculo")
+        )
+
+        //Recupero los elementos en la pagina 2
+        val itemsPagina2 = service.recuperarPaginados(2, 2)
+        Assertions.assertTrue(
+            itemsPagina2.items.elementAt(0).nombre.equals("item4")
+        )
+        Assertions.assertTrue(
+            itemsPagina2.items.elementAt(1).nombre.equals("item5")
+        )
+
+        //Intento recuperar elementos de una pagina inexistente
+        val itemsPagina5 = service.recuperarPaginados(2, 5)
+        Assertions.assertTrue(itemsPagina5.items.isEmpty())
     }
 
     @AfterEach
