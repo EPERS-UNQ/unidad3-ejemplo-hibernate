@@ -16,13 +16,6 @@ repositories {
     mavenCentral()
 }
 
-allOpen {
-    annotation("javax.persistence.Entity")
-    annotation("javax.persistence.MappedSuperclass")
-    annotation("javax.persistence.Embeddable")
-}
-
-
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.9.2'

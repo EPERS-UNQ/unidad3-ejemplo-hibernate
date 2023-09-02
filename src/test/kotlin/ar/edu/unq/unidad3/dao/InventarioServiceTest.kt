@@ -1,6 +1,8 @@
 package ar.edu.unq.unidad3.dao
 
-import ar.edu.unq.unidad3.dao.impl.HibernateDataDAO
+import ar.edu.unq.unidad3.dao.helper.dao.HibernateDataDAO
+import ar.edu.unq.unidad3.dao.helper.service.DataService
+import ar.edu.unq.unidad3.dao.helper.service.DataServiceImpl
 import ar.edu.unq.unidad3.dao.impl.HibernateItemDAO
 import ar.edu.unq.unidad3.dao.impl.HibernatePersonajeDAO
 import ar.edu.unq.unidad3.modelo.Item
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 class InventarioServiceTest {
 
     lateinit var service: InventarioService
+    lateinit var dataService: DataService
     lateinit var maguin: Personaje
     lateinit var debilucho: Personaje
     lateinit var baculo: Item
@@ -23,10 +26,11 @@ class InventarioServiceTest {
     fun prepare() {
         this.service = InventarioServiceImp(
             HibernatePersonajeDAO(),
-            HibernateItemDAO(),
+            HibernateItemDAO()
+        )
+        this.dataService = DataServiceImpl(
             HibernateDataDAO()
         )
-
         tunica = Item("Tunica", 100)
         baculo = Item("Baculo", 50)
 
@@ -101,7 +105,7 @@ class InventarioServiceTest {
     fun cleanup() {
         //Destroy cierra la session factory y fuerza a que, la proxima vez, una nueva tenga
         //que ser creada.
-        service.clear()
+        dataService.cleanAll()
     }
 
 }

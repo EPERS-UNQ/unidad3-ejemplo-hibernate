@@ -8,6 +8,7 @@ class HibernateSessionFactoryProvider private constructor() {
 
     private val sessionFactory: SessionFactory?
 
+    //Configuracion de la sesion
     init {
         val env = System.getenv()
         val user = "root"
@@ -33,6 +34,8 @@ class HibernateSessionFactoryProvider private constructor() {
         return this.sessionFactory!!.openSession()
     }
 
+    // Patron de diseño singleton.
+    // No hace falta crear mas de un manejador de sesiones, queremos que sea siempre el mismo.
     companion object {
 
         private var INSTANCE: HibernateSessionFactoryProvider? = null

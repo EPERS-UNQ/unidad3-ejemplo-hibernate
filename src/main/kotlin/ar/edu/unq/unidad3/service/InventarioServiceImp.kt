@@ -1,6 +1,5 @@
 package ar.edu.unq.unidad3.service
 
-import ar.edu.unq.unidad3.dao.DataDAO
 import ar.edu.unq.unidad3.dao.ItemDAO
 import ar.edu.unq.unidad3.dao.PersonajeDAO
 import ar.edu.unq.unidad3.modelo.Item
@@ -9,8 +8,7 @@ import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner.runTrx
 
 class InventarioServiceImp (
     private val personajeDAO: PersonajeDAO,
-    private val itemDAO: ItemDAO,
-    private val dataDAO: DataDAO
+    private val itemDAO: ItemDAO
 ) : InventarioService {
 
     override fun allItems(): Collection<Item>{
@@ -49,11 +47,5 @@ class InventarioServiceImp (
     override fun getItemsPersonajesDebiles(vida: Int): Collection<Item> {
         return runTrx { itemDAO.getItemsDePersonajesDebiles(vida) }
     }
-
-
-    override fun clear() {
-        runTrx { dataDAO.clear() }
-    }
-
 
 }
