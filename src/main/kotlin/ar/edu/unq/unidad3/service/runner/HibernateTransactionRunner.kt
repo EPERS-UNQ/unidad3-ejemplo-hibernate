@@ -32,6 +32,7 @@ object HibernateTransactionRunner {
                 tx.rollback()
                 throw e
             }finally {
+                session.close()
                 sessionThreadLocal.set(null)
             }
     }
