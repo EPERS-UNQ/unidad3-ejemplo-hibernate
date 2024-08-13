@@ -5,11 +5,16 @@ import ar.edu.unq.unidad3.dao.helper.service.DataService;
 import ar.edu.unq.unidad3.dao.helper.service.DataServiceImpl;
 import ar.edu.unq.unidad3.dao.impl.HibernateItemDAO;
 import ar.edu.unq.unidad3.dao.impl.HibernatePersonajeDAO;
+import ar.edu.unq.unidad3.modelo.Guerrero;
 import ar.edu.unq.unidad3.modelo.Item;
+import ar.edu.unq.unidad3.modelo.Mago;
 import ar.edu.unq.unidad3.modelo.Personaje;
 import ar.edu.unq.unidad3.service.InventarioServiceImpl;
+import ar.edu.unq.unidad3.service.ItemsPaginados;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,8 +23,8 @@ public class InventarioServiceTest {
 
     private InventarioServiceImpl service;
     private DataService dataService;
-    private Personaje maguin;
-    private Personaje debilucho;
+    private Mago maguin;
+    private Guerrero debilucho;
     private Item baculo;
     private Item tunica;
 
@@ -38,14 +43,16 @@ public class InventarioServiceTest {
         service.guardarItem(tunica);
         service.guardarItem(baculo);
 
-        maguin = new Personaje("Maguin");
+        maguin = new Mago("Maguin");
         maguin.setPesoMaximo(70);
         maguin.setVida(10);
+        maguin.setMagia(200);
         service.guardarPersonaje(maguin);
 
-        debilucho = new Personaje("Debilucho");
+        debilucho = new Guerrero("Debilucho");
         debilucho.setPesoMaximo(1000);
         debilucho.setVida(1);
+        debilucho.setFuerza(5);
         service.guardarPersonaje(debilucho);
     }
 
@@ -98,6 +105,48 @@ public class InventarioServiceTest {
     void testGetMasPesado() {
         Item item = service.heaviestItem();
         assertEquals("Tunica", item.getNombre());
+    }
+
+    @Test
+    void itemsPaginados() {
+        // Pagina 0
+        // Tunica y Baculo creados en el BeforeEach
+        List.of(
+                // Pagina 1
+                new Item("item2", 100),
+                new Item("item3", 50),
+                // Pagina 2
+                new Item("item4", 100),
+                new Item("item5", 50),
+                // Pagina 3
+                new Item("item6", 100),
+                new Item("item7", 50),
+                // Pagina 4
+                new Item("item8", 100),
+                new Item("item9", 50)
+        ).forEach(item -> service.guardarItem(item));
+
+        // Recupero los elementos en la pagina 0
+        ItemsPaginados itemsPagina0 = service.recuperarPaginados(2, 0);
+        assertTrue(
+                itemsPagina0.items().stream().anyMatch(item -> item.getNombre().equals("Tunica"))
+        );
+        assertTrue(
+                itemsPagina0.items().stream().anyMatch(item -> item.getNombre().equals("Baculo"))
+        );
+
+        // Recupero los elementos en la pagina 2
+        ItemsPaginados itemsPagina2 = service.recuperarPaginados(2, 2);
+        assertTrue(
+                itemsPagina2.items().stream().anyMatch(item -> item.getNombre().equals("item4"))
+        );
+        assertTrue(
+                itemsPagina2.items().stream().anyMatch(item -> item.getNombre().equals("item5"))
+        );
+
+        // Intento recuperar elementos de una pagina inexistente
+        ItemsPaginados itemsPagina5 = service.recuperarPaginados(2, 5);
+        assertTrue(itemsPagina5.items().isEmpty());
     }
 
     @AfterEach

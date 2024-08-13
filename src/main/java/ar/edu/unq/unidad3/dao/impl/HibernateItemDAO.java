@@ -48,4 +48,26 @@ public class HibernateItemDAO extends HibernateDAO<Item> implements ItemDAO {
         query.setMaxResults(1);
         return query.getSingleResult();
     }
+
+    @Override
+    public Collection<Item> recuperarPaginados(int elementosPorPagina, int pagina) {
+        Session session = HibernateTransactionRunner.getCurrentSession();
+
+        String hql = "select i from Item i";
+        Query<Item> query = session.createQuery(hql, Item.class);
+        query.setFirstResult(pagina * elementosPorPagina);
+        query.setMaxResults(elementosPorPagina);
+
+        return query.getResultList();
+    }
+    @Override
+    public int contarTodos() {
+        Session session = HibernateTransactionRunner.getCurrentSession();
+
+        String hql = "select count(i) from Item i";
+        Query<Long> query = session.createQuery(hql, Long.class);
+
+        return query.getSingleResult().intValue();
+    }
+
 }

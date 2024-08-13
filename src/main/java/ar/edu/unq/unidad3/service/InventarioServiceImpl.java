@@ -69,4 +69,17 @@ public class InventarioServiceImpl implements InventarioService {
     public Collection<Item> getItemsPersonajesDebiles(int vida) {
         return HibernateTransactionRunner.runTrx(() -> itemDAO.getItemsDePersonajesDebiles(vida));
     }
+
+    @Override
+    public ItemsPaginados recuperarPaginados(int elementosPorPagina, int pagina) {
+        return HibernateTransactionRunner.runTrx(() -> {
+            if (pagina < 0) {
+                throw new RuntimeException("El número de página " + pagina + " es menor a 0");
+            }
+            Collection<Item> items = itemDAO.recuperarPaginados(elementosPorPagina, pagina);
+            int totalItems = itemDAO.contarTodos();
+            return new ItemsPaginados(items, totalItems);
+        });
+    }
 }
+

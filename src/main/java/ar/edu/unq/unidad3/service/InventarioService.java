@@ -13,4 +13,5 @@ public interface InventarioService {
     void recoger(Long personajeId, Long itemId);
     Collection<Item> getMasPesdos(int peso);
     Collection<Item> getItemsPersonajesDebiles(int vida);
+    ItemsPaginados recuperarPaginados(int elementosPorPagina, int pagina);
 }
