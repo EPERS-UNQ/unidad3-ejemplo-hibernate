@@ -1,12 +1,10 @@
 package ar.edu.unq.unidad3.modelo;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.Objects;
-@Getter @Setter @NoArgsConstructor
+
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode @ToString
 
 @Entity
 public final class Item {
@@ -23,21 +21,5 @@ public final class Item {
         this.nombre = nombre;
         this.peso = peso;
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return Objects.equals(id, item.id);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return nombre;
-    }
 }
