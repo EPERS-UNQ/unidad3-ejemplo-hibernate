@@ -3,10 +3,11 @@ package ar.edu.unq.unidad3.modelo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import jakarta.persistence.*;
 
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @ToString
 
 @Entity
 public final class Mago extends Personaje {

@@ -42,8 +42,4 @@ public abstract class Personaje {
         item.setOwner(this);
     }
 
-    @Override
-    public String toString() {
-        return nombre;
-    }
 }
