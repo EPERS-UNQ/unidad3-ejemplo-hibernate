@@ -3,7 +3,7 @@ package ar.edu.unq.unidad3.modelo;
 import ar.edu.unq.unidad3.modelo.exception.MuchoPesoException;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 

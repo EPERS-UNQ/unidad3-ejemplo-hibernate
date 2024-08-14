@@ -1,8 +1,8 @@
 package ar.edu.unq.unidad3.modelo;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 @Getter @Setter @NoArgsConstructor @EqualsAndHashCode @ToString
 
 @Entity
