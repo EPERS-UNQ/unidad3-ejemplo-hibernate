@@ -38,14 +38,10 @@ public class InventarioServiceTest {
         service.guardarItem(tunica);
         service.guardarItem(baculo);
 
-        maguin = new Personaje("Maguin");
-        maguin.setPesoMaximo(70);
-        maguin.setVida(10);
+        maguin = new Personaje("Maguin",  10, 70);
         service.guardarPersonaje(maguin);
 
-        debilucho = new Personaje("Debilucho");
-        debilucho.setPesoMaximo(1000);
-        debilucho.setVida(1);
+        debilucho = new Personaje("Debilucho", 1, 1000);
         service.guardarPersonaje(debilucho);
     }
 

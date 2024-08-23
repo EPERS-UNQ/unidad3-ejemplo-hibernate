@@ -10,15 +10,14 @@ public final class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NonNull
+
     private String nombre;
-    @NonNull
     private Integer peso;
 
     @ManyToOne
     private Personaje owner;
 
-    public Item(String nombre, int peso) {
+    public Item(@NonNull String nombre,  @NonNull Integer peso) {
         this.nombre = nombre;
         this.peso = peso;
     }

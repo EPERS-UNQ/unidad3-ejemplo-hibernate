@@ -17,16 +17,19 @@ public class Personaje {
     private Long id;
     @Column(nullable = false, length = 500)
     private String nombre;
-    @NonNull
-    private int vida;
-    @NonNull
-    private int pesoMaximo;
+
+    private Integer vida;
+    private Integer pesoMaximo;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Item> inventario = new HashSet<>();
 
-    public Personaje(String nombre) {
+
+
+    public Personaje(@NonNull String nombre, @NonNull Integer vida,  @NonNull Integer pesoMaximo) {
         this.nombre = nombre;
+        this.vida = vida;
+        this.pesoMaximo = pesoMaximo;
     }
 
     public int getPesoActual() {
