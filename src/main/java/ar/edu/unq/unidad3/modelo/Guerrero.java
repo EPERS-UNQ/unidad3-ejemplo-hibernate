@@ -1,9 +1,6 @@
 package ar.edu.unq.unidad3.modelo;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import jakarta.persistence.*;
 
@@ -14,10 +11,11 @@ public final class Guerrero extends Personaje {
 
     private Integer fuerza;
 
-
-    public Guerrero(String nombre) {
-        super();
+    public Guerrero(@NonNull String nombre, @NonNull Integer vida, @NonNull Integer pesoMaximo, @NonNull Integer fuerza) {
         this.setNombre(nombre);
+        this.setVida(vida);
+        this.setPesoMaximo(pesoMaximo);
+        this.setFuerza(fuerza);
     }
 
 }

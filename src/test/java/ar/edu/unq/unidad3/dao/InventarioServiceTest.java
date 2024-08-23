@@ -43,16 +43,10 @@ public class InventarioServiceTest {
         service.guardarItem(tunica);
         service.guardarItem(baculo);
 
-        maguin = new Mago("Maguin");
-        maguin.setPesoMaximo(70);
-        maguin.setVida(10);
-        maguin.setMagia(200);
+        maguin = new Mago("Maguin", 10, 70, 200);
         service.guardarPersonaje(maguin);
 
-        debilucho = new Guerrero("Debilucho");
-        debilucho.setPesoMaximo(1000);
-        debilucho.setVida(1);
-        debilucho.setFuerza(5);
+        debilucho = new Guerrero("Debilucho", 1, 1000, 5);
         service.guardarPersonaje(debilucho);
     }
 

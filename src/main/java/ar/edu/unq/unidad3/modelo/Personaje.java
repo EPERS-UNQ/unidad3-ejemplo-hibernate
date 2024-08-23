@@ -2,6 +2,7 @@ package ar.edu.unq.unidad3.modelo;
 
 import ar.edu.unq.unidad3.modelo.exception.MuchoPesoException;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import jakarta.persistence.*;
@@ -23,7 +24,6 @@ public abstract class Personaje {
     @Column(nullable = false, length = 500)
     private String nombre;
 
-    //Not null by default
     private Integer vida;
     private Integer pesoMaximo;
 

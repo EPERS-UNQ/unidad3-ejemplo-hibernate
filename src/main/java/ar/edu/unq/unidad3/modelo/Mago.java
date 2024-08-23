@@ -1,9 +1,6 @@
 package ar.edu.unq.unidad3.modelo;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import jakarta.persistence.*;
 
@@ -11,9 +8,12 @@ import jakarta.persistence.*;
 
 @Entity
 public final class Mago extends Personaje {
-    private int magia;
+    private Integer magia;
 
-    public Mago(String nombre) {
+    public Mago(@NonNull String nombre, @NonNull Integer vida, @NonNull Integer pesoMaximo, @NonNull Integer magia) {
         this.setNombre(nombre);
+        this.setVida(vida);
+        this.setPesoMaximo(pesoMaximo);
+        this.setMagia(magia);
     }
 }

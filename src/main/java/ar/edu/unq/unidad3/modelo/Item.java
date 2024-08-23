@@ -17,7 +17,7 @@ public final class Item {
     @ManyToOne
     private Personaje owner;
 
-    public Item(String nombre, int peso) {
+    public Item(@NonNull String nombre, @NonNull Integer peso) {
         this.nombre = nombre;
         this.peso = peso;
     }
