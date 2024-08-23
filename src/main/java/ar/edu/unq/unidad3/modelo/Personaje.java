@@ -17,7 +17,9 @@ public class Personaje {
     private Long id;
     @Column(nullable = false, length = 500)
     private String nombre;
+    @NonNull
     private int vida;
+    @NonNull
     private int pesoMaximo;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
