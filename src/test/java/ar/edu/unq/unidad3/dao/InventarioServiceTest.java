@@ -7,6 +7,7 @@ import ar.edu.unq.unidad3.dao.impl.HibernateItemDAO;
 import ar.edu.unq.unidad3.dao.impl.HibernatePersonajeDAO;
 import ar.edu.unq.unidad3.modelo.Item;
 import ar.edu.unq.unidad3.modelo.Personaje;
+import ar.edu.unq.unidad3.modelo.exception.MuchoPesoException;
 import ar.edu.unq.unidad3.service.InventarioServiceImpl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -94,6 +95,11 @@ public class InventarioServiceTest {
     void testGetMasPesado() {
         Item item = service.heaviestItem();
         assertEquals("Tunica", item.getNombre());
+    }
+
+    @Test
+    void siUnPersonajeAgarraMasPesoDelQuePuedeLlevarSeLanzaMuchoPesoException () {
+        assertThrows(MuchoPesoException.class, () -> service.recoger(maguin.getId(), tunica.getId()));
     }
 
     @AfterEach
