@@ -10,4 +10,6 @@ public interface ItemDAO {
     Item recuperar(Long id);
     Collection<Item> getMasPesados(int peso);
     Collection<Item> getItemsDePersonajesDebiles(int unaVida);
+    void eliminar(Item item);
+    void eliminarTodo();
 }

@@ -69,4 +69,28 @@ public class InventarioServiceImpl implements InventarioService {
     public Collection<Item> getItemsPersonajesDebiles(int vida) {
         return HibernateTransactionRunner.runTrx(() -> itemDAO.getItemsDePersonajesDebiles(vida));
     }
+
+    @Override
+    public void eliminarPersonaje(Personaje personaje){
+        HibernateTransactionRunner.runTrx(() -> {
+            personajeDAO.eliminar(personaje);
+            return null;
+        });
+    }
+    @Override
+    public void eliminarItem(Item item){
+        HibernateTransactionRunner.runTrx(() -> {
+            itemDAO.eliminar(item);
+            return null;
+        });
+    }
+
+    @Override
+    public void eliminarTodo(){
+        HibernateTransactionRunner.runTrx(() -> {
+            itemDAO.eliminarTodo();
+            personajeDAO.eliminarTodo();
+            return null;
+        });
+    }
 }
