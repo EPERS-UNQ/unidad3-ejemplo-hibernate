@@ -12,4 +12,6 @@ public interface ItemDAO {
     Collection<Item> getItemsDePersonajesDebiles(int unaVida);
     Collection<Item> recuperarPaginados(int elementosPorPagina, int pagina);
     int contarTodos();
+
+    void eliminarTodo();
 }

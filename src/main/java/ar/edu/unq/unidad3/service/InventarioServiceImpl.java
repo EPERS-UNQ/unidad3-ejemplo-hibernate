@@ -81,5 +81,15 @@ public class InventarioServiceImpl implements InventarioService {
             return new ItemsPaginados(items, totalItems);
         });
     }
+
+    @Override
+    public void eliminarTodo(){
+        HibernateTransactionRunner.runTrx(() -> {
+            itemDAO.eliminarTodo();
+            personajeDAO.eliminarTodo();
+            return null;
+        });
+    };
+
 }
 

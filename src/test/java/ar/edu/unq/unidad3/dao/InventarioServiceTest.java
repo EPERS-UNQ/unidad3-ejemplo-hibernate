@@ -1,8 +1,6 @@
 package ar.edu.unq.unidad3.dao;
 
-import ar.edu.unq.unidad3.dao.helper.dao.HibernateDataDAO;
-import ar.edu.unq.unidad3.dao.helper.service.DataService;
-import ar.edu.unq.unidad3.dao.helper.service.DataServiceImpl;
+
 import ar.edu.unq.unidad3.dao.impl.HibernateItemDAO;
 import ar.edu.unq.unidad3.dao.impl.HibernatePersonajeDAO;
 import ar.edu.unq.unidad3.modelo.Guerrero;
@@ -11,7 +9,10 @@ import ar.edu.unq.unidad3.modelo.Mago;
 import ar.edu.unq.unidad3.modelo.Personaje;
 import ar.edu.unq.unidad3.service.InventarioServiceImpl;
 import ar.edu.unq.unidad3.service.ItemsPaginados;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import java.util.List;
@@ -22,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class InventarioServiceTest {
 
     private InventarioServiceImpl service;
-    private DataService dataService;
     private Mago maguin;
     private Guerrero debilucho;
     private Item baculo;
@@ -34,9 +34,7 @@ public class InventarioServiceTest {
                 new HibernatePersonajeDAO(),
                 new HibernateItemDAO()
         );
-        this.dataService = new DataServiceImpl(
-                new HibernateDataDAO()
-        );
+
         tunica = new Item("Tunica", 100);
         baculo = new Item("Baculo", 50);
 
@@ -145,7 +143,6 @@ public class InventarioServiceTest {
 
     @AfterEach
     void cleanup() {
-        // Destroy cierra la session factory y fuerza a que, la proxima vez, una nueva tenga que ser creada.
-        dataService.cleanAll();
+        service.eliminarTodo();
     }
 }
