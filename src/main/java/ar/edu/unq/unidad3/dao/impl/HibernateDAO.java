@@ -1,6 +1,7 @@
 package ar.edu.unq.unidad3.dao.impl;
 
 import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner;
+import jakarta.persistence.LockModeType;
 import org.hibernate.Session;
 
 public class HibernateDAO<T> {
@@ -13,7 +14,7 @@ public class HibernateDAO<T> {
 
     public void guardar(T entity) {
         Session session = HibernateTransactionRunner.getCurrentSession();
-        session.save(entity);
+        session.saveOrUpdate(entity);
     }
 
     public T recuperar(Long id) {

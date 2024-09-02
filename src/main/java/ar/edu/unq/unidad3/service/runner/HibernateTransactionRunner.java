@@ -2,6 +2,8 @@ package ar.edu.unq.unidad3.service.runner;
 
 import org.hibernate.Session;
 
+import java.sql.Connection;
+
 public class HibernateTransactionRunner {
 
     private static final ThreadLocal<Session> sessionThreadLocal = new ThreadLocal<>();
@@ -13,14 +15,18 @@ public class HibernateTransactionRunner {
         return sessionThreadLocal.get();
     }
 
-    public static <T> T runTrx(TransactionBlock<T> bloque) {
+    public static <T> T runTrx(int isolationLevel, TransactionBlock<T> block) {
         Session session = HibernateSessionFactoryProvider.getInstance().createSession();
         sessionThreadLocal.set(session);
         var tx = session.beginTransaction();
+
+        // Seteamos el nivel de isolacion
+        session.doWork(connection -> connection.setTransactionIsolation(isolationLevel));
+
         try {
-            T resultado = bloque.execute();
+            T result = block.execute();
             tx.commit();
-            return resultado;
+            return result;
         } catch (RuntimeException e) {
             tx.rollback();
             throw e;
@@ -28,6 +34,10 @@ public class HibernateTransactionRunner {
             session.close();
             sessionThreadLocal.set(null);
         }
+    }
+
+    public static <T> T runTrx(TransactionBlock<T> block) {
+        return runTrx(Connection.TRANSACTION_REPEATABLE_READ, block); // Default to REPEATABLE_READ
     }
 
     @FunctionalInterface

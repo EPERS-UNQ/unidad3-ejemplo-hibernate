@@ -4,6 +4,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public class HibernateSessionFactoryProvider {
 
     private static HibernateSessionFactoryProvider INSTANCE;
@@ -19,7 +22,6 @@ public class HibernateSessionFactoryProvider {
         String dialect = System.getenv().getOrDefault("HIBERNATE_DIALECT", "org.hibernate.dialect.MySQL8Dialect");
         String driver = System.getenv().getOrDefault("SQL_DRIVER", "com.mysql.cj.jdbc.Driver");
 
-
         Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
         configuration.setProperty("hibernate.connection.username", user);
@@ -28,11 +30,6 @@ public class HibernateSessionFactoryProvider {
         configuration.setProperty("connection.driver_class", driver);
         configuration.setProperty("dialect", dialect);
         this.sessionFactory = configuration.buildSessionFactory();
-
-
-
-
-
     }
 
     public Session createSession() {
