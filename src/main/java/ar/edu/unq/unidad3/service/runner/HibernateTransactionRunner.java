@@ -39,7 +39,7 @@ public class HibernateTransactionRunner {
     }
 
     public static <T> T runTrx(TransactionBlock<T> block) {
-        return runTrx(Connection.TRANSACTION_REPEATABLE_READ, block); // Default to REPEATABLE_READ
+        return runTrx(null, block);
     }
 
     @FunctionalInterface
