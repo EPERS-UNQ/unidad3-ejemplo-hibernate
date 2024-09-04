@@ -57,20 +57,22 @@ public class IsolationLevelTest {
                     // De-lockeamos thread 2, y esperamos a que termine
                     concurrencyHelper.signalThread2ToStart();
                     concurrencyHelper.waitForThread1ToResume();
-                    System.out.println("Thread 1 - De-Lockeado");
 
-                    // Limpiamos el cache L1, asi no molesta y probamos el aislamiento con la DB
-                    HibernateTransactionRunner.getCurrentSession().clear();
+                    ////// A partir de aca leer despues de que thread 2 haya terminado
+                            System.out.println("Thread 1 - De-Lockeado");
 
-                    // DESPUES DE THREAD 2 TERMINADO
-                    System.out.println("Thread 1 - Releyendo");
-                    Personaje personajeAgain = dao.recuperar(maguin.getId());
-                    assertEquals("Maguin", personajeAgain.getNombre());
+                            // Limpiamos el cache L1, asi no molesta y probamos el aislamiento con la DB
+                            HibernateTransactionRunner.getCurrentSession().clear();
 
-                    // Thread 1 updates the personaje again
-                    personajeAgain.setNombre("Sarazan");
-                    System.out.println("Thread 1 - Updateo Maguin a Sarazan");
-                    dao.guardar(personajeAgain);
+                            // DESPUES DE THREAD 2 TERMINADO
+                            System.out.println("Thread 1 - Releyendo");
+                            Personaje personajeAgain = dao.recuperar(maguin.getId());
+                            assertEquals("Maguin", personajeAgain.getNombre());
+
+                            // Thread 1 updates the personaje again
+                            personajeAgain.setNombre("Sarazan");
+                            System.out.println("Thread 1 - Updateo Maguin a Sarazan");
+                            dao.guardar(personajeAgain);
                 }, () -> System.out.println("Thread 1 - Termino")
         );
 
