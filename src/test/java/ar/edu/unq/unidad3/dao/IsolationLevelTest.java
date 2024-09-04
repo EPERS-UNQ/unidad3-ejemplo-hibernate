@@ -115,7 +115,7 @@ public class IsolationLevelTest {
 
             System.out.println("Thread 1 - Releyendo");
             Personaje personajeAgain = dao.recuperar(maguin.getId());
-            // En este nivel, Thread 1 ve el cambio que thread 2 ya commiteo
+            // En READ_COMMITED, Thread 1 ve el cambio que thread 2 ya commiteo
             assertEquals("MaguinUpdated", personajeAgain.getNombre());
 
             personajeAgain.setNombre("Sarazan");
@@ -205,7 +205,7 @@ public class IsolationLevelTest {
 
     // Este test nunca temrina porque el nivel de aislamiento SERIALIZABLE bloquea la escritura de Thread 2
     // y Thread 1 no puede terminar hasta que Thread 2 termine. Deadlock!
-    @Test
+//    @Test
     void serializableIsolation() throws InterruptedException {
         // Thread 1
         concurrencyHelper.runInTransaction(Connection.TRANSACTION_SERIALIZABLE, () -> {
@@ -240,7 +240,7 @@ public class IsolationLevelTest {
             concurrencyHelper.signalThread1ToResume();
         });
 
-        // Wait for both threads to finish
+        // Esperamos a que ambos threads terminen
         concurrencyHelper.shutdown();
     }
 

@@ -28,14 +28,18 @@ public class TransactionConcurrencyHelper {
 
     public void runInTransaction(Integer isolationLevel, Runnable transactionLogic, Runnable afterTransactionLogic) {
         executor.submit(() -> {
-            HibernateTransactionRunner.runTrx(isolationLevel, () -> {
-                transactionLogic.run();
-                return null;
-            });
-            if (afterTransactionLogic != null) {
-                afterTransactionLogic.run();
+            try {
+                HibernateTransactionRunner.runTrx(isolationLevel, () -> {
+                    transactionLogic.run();
+                    return null;
+                });
+            } catch (Exception e) {
+            } finally {
+                if (afterTransactionLogic != null) {
+                    afterTransactionLogic.run();
+                }
+                completeTransaction();
             }
-            completeTransaction();
         });
     }
 

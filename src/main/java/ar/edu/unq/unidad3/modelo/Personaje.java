@@ -18,15 +18,11 @@ public class Personaje {
     @Column(nullable = false, length = 500)
     private String nombre;
 
-//    @Version
-//    private Integer version;
-
     private Integer vida;
     private Integer pesoMaximo;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Item> inventario = new HashSet<>();
-
 
 
     public Personaje(@NonNull String nombre, @NonNull Integer vida,  @NonNull Integer pesoMaximo) {
