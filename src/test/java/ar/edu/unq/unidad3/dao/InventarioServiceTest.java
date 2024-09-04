@@ -6,11 +6,13 @@ import ar.edu.unq.unidad3.modelo.Item;
 import ar.edu.unq.unidad3.modelo.Personaje;
 import ar.edu.unq.unidad3.modelo.exception.MuchoPesoException;
 import ar.edu.unq.unidad3.service.InventarioServiceImpl;
+import ar.edu.unq.unidad3.service.runner.HibernateSessionFactoryProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,6 +99,23 @@ public class InventarioServiceTest {
     @Test
     void siUnPersonajeAgarraMasPesoDelQuePuedeLlevarSeLanzaMuchoPesoException () {
         assertThrows(MuchoPesoException.class, () -> service.recoger(maguin.getId(), tunica.getId()));
+    }
+
+    @Test
+    void seRecuperaUnObjetoCacheadoAccediendoSoloUnaVezALaBaseDeDatos() {
+        var logger = Logger.getLogger(this.getClass().getName());
+        var sesion = HibernateSessionFactoryProvider.getInstance().createSession();
+
+        logger.info("Recuperando maguito por primera vez");
+        Personaje maguito = sesion.get(Personaje.class, maguin.getId());
+
+        logger.info("Recuperando maguito por segunda vez");
+        Personaje otroMaguito = sesion.get(Personaje.class, maguin.getId());
+
+        assertSame(maguito, otroMaguito);
+
+        logger.info("Cerramos la sesión");
+        sesion.close();
     }
 
     @AfterEach
