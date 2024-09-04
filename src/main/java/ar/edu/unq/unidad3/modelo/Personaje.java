@@ -18,8 +18,8 @@ public class Personaje {
     @Column(nullable = false, length = 500)
     private String nombre;
 
-    @Version
-    private Integer version;
+//    @Version
+//    private Integer version;
 
     private Integer vida;
     private Integer pesoMaximo;

@@ -15,13 +15,15 @@ public class HibernateTransactionRunner {
         return sessionThreadLocal.get();
     }
 
-    public static <T> T runTrx(int isolationLevel, TransactionBlock<T> block) {
+    public static <T> T runTrx(Integer isolationLevel, TransactionBlock<T> block) {
         Session session = HibernateSessionFactoryProvider.getInstance().createSession();
         sessionThreadLocal.set(session);
         var tx = session.beginTransaction();
 
         // Seteamos el nivel de isolacion
-        session.doWork(connection -> connection.setTransactionIsolation(isolationLevel));
+        if(isolationLevel != null){
+            session.doWork(connection -> connection.setTransactionIsolation(isolationLevel));
+        }
 
         try {
             T result = block.execute();
