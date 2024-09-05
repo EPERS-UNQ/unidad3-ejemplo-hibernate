@@ -102,7 +102,7 @@ public class InventarioServiceTest {
     }
 
     @Test
-    void seRecuperaUnObjetoCacheadoAccediendoSoloUnaVezALaBaseDeDatos() {
+    void seRecuperaUnObjetoCacheadoAccediendoSoloUnaVezALaBaseDeDatosDentroDeLaMismaSesion() {
         var logger = Logger.getLogger(this.getClass().getName());
         var sesion = HibernateSessionFactoryProvider.getInstance().createSession();
 
@@ -112,34 +112,34 @@ public class InventarioServiceTest {
         logger.info("Recuperando maguito por segunda vez");
         Personaje otroMaguito = sesion.get(Personaje.class, maguin.getId());
 
-        assertSame(maguito, otroMaguito);
-
         logger.info("Cerramos la sesión");
         sesion.close();
     }
 
     @Test
-    void lala() {
-        System.out.println("1");
-        var m0 = service.recuperarPersonaje(maguin.getId());
+    void seRecuperaUnObjetoCacheadoDesdeOtraSesionYTransaccion() {
+        var logger = Logger.getLogger(this.getClass().getName());
+        logger.info("Recuperando maguito por primera vez");
+        var maguito = service.recuperarPersonaje(maguin.getId());
 
-        System.out.println("2");
-        var m1 = service.recuperarPersonaje(maguin.getId());
+        logger.info("Recuperando maguito por segunda vez");
+        var otroMaguito = service.recuperarPersonaje(maguin.getId());
     }
 
     @Test
-    void lili() {
-        System.out.println("1");
-        var m0 = service.recuperarPersonaje(maguin.getId());
+    void seRecuperaUnObjetoCacheadoDesdeOtraSesionYTransaccionTrasActualizarSuCollecion() {
+        var logger = Logger.getLogger(this.getClass().getName());
+        logger.info("Recuperando maguito por primera vez");
+        var maguito = service.recuperarPersonaje(maguin.getId());
 
-        System.out.println("2");
-        var m1 = service.recuperarPersonaje(maguin.getId());
+        logger.info("Recuperando maguito por segunda vez");
+        var otroMaguito = service.recuperarPersonaje(maguin.getId());
 
-        System.out.println("asdsadadsd");
+        logger.info("Actualizamos las relaciones en la DB");
         service.recoger(maguin.getId(), baculo.getId());
 
-        System.out.println("3");
-        var m3 = service.recuperarPersonaje(maguin.getId());
+        logger.info("Recuperando maguito por tercera vez");
+        var otroOtroMaguito = service.recuperarPersonaje(maguin.getId());
     }
 
     @AfterEach

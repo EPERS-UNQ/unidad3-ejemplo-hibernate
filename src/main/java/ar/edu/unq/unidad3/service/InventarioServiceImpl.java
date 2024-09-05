@@ -55,7 +55,6 @@ public class InventarioServiceImpl implements InventarioService {
             Personaje personaje = personajeDAO.recuperar(personajeId);
             Item item = itemDAO.recuperar(itemId);
             personaje.recoger(item);
-            personaje.setVida(16516);
             personajeDAO.guardar(personaje);
             return null;
         });
