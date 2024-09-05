@@ -118,6 +118,30 @@ public class InventarioServiceTest {
         sesion.close();
     }
 
+    @Test
+    void lala() {
+        System.out.println("1");
+        var m0 = service.recuperarPersonaje(maguin.getId());
+
+        System.out.println("2");
+        var m1 = service.recuperarPersonaje(maguin.getId());
+    }
+
+    @Test
+    void lili() {
+        System.out.println("1");
+        var m0 = service.recuperarPersonaje(maguin.getId());
+
+        System.out.println("2");
+        var m1 = service.recuperarPersonaje(maguin.getId());
+
+        System.out.println("asdsadadsd");
+        service.recoger(maguin.getId(), baculo.getId());
+
+        System.out.println("3");
+        var m3 = service.recuperarPersonaje(maguin.getId());
+    }
+
     @AfterEach
     void cleanup() {
         service.eliminarTodo();

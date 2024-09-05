@@ -4,12 +4,16 @@ import ar.edu.unq.unidad3.modelo.exception.MuchoPesoException;
 import lombok.*;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor @ToString
 
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class Personaje {
 
     @Id
