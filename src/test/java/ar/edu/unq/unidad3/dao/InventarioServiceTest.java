@@ -101,47 +101,6 @@ public class InventarioServiceTest {
         assertThrows(MuchoPesoException.class, () -> service.recoger(maguin.getId(), tunica.getId()));
     }
 
-    @Test
-    void seRecuperaUnObjetoCacheadoAccediendoSoloUnaVezALaBaseDeDatosDentroDeLaMismaSesion() {
-        var logger = Logger.getLogger(this.getClass().getName());
-        var sesion = HibernateSessionFactoryProvider.getInstance().createSession();
-
-        logger.info("Recuperando maguito por primera vez");
-        Personaje maguito = sesion.get(Personaje.class, maguin.getId());
-
-        logger.info("Recuperando maguito por segunda vez");
-        Personaje otroMaguito = sesion.get(Personaje.class, maguin.getId());
-
-        logger.info("Cerramos la sesión");
-        sesion.close();
-    }
-
-    @Test
-    void seRecuperaUnObjetoCacheadoDesdeOtraSesionYTransaccion() {
-        var logger = Logger.getLogger(this.getClass().getName());
-        logger.info("Recuperando maguito por primera vez");
-        var maguito = service.recuperarPersonaje(maguin.getId());
-
-        logger.info("Recuperando maguito por segunda vez");
-        var otroMaguito = service.recuperarPersonaje(maguin.getId());
-    }
-
-    @Test
-    void seRecuperaUnObjetoCacheadoDesdeOtraSesionYTransaccionTrasActualizarSuCollecion() {
-        var logger = Logger.getLogger(this.getClass().getName());
-        logger.info("Recuperando maguito por primera vez");
-        var maguito = service.recuperarPersonaje(maguin.getId());
-
-        logger.info("Recuperando maguito por segunda vez");
-        var otroMaguito = service.recuperarPersonaje(maguin.getId());
-
-        logger.info("Actualizamos las relaciones en la DB");
-        service.recoger(maguin.getId(), baculo.getId());
-
-        logger.info("Recuperando maguito por tercera vez");
-        var otroOtroMaguito = service.recuperarPersonaje(maguin.getId());
-    }
-
     @AfterEach
     void cleanup() {
         service.eliminarTodo();
