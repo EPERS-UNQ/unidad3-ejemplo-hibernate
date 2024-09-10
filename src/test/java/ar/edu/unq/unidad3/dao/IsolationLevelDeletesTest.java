@@ -14,8 +14,9 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class IsolationLevelTest {
+public class IsolationLevelDeletesTest {
 
     private InventarioServiceImpl service;
     private PersonajeDAO dao;
@@ -67,12 +68,7 @@ public class IsolationLevelTest {
                             // DESPUES DE THREAD 2 TERMINADO
                             System.out.println("Thread 1 - Releyendo");
                             Personaje personajeAgain = dao.recuperar(maguin.getId());
-                            assertEquals("Maguin", personajeAgain.getNombre());
-
-                            // Thread 1 updates the personaje again
-                            personajeAgain.setNombre("Sarazan");
-                            System.out.println("Thread 1 - Updateo Maguin a Sarazan");
-                            dao.guardar(personajeAgain);
+                            assertNull(personajeAgain);
                 }, () -> System.out.println("Thread 1 - Termino")
         );
 
@@ -82,9 +78,8 @@ public class IsolationLevelTest {
             System.out.println("Thread 2 - Primera lectura");
             Personaje personaje2 = dao.recuperar(maguin.getId());
 
-            System.out.println("Thread 2 - Updateando Maguin a MaguinUpdated");
-            personaje2.setNombre("MaguinUpdated");
-            dao.guardar(personaje2);
+            System.out.println("Thread 2 - Eliminando Maguin a MaguinUpdated");
+            dao.eliminar(personaje2);
         }, () -> {
             System.out.println("Thread 2 - Terminando y delockeando thread 1");
             concurrencyHelper.signalThread1ToResume();
@@ -95,7 +90,7 @@ public class IsolationLevelTest {
         System.out.println("Se terminaron ambas transacciones, continuando...");
 
         Personaje updatedPersonaje = service.recuperarPersonaje(maguin.getId());
-        assertEquals("Sarazan", updatedPersonaje.getNombre());
+        assertNull(updatedPersonaje);
     }
 
     @Test
@@ -117,12 +112,8 @@ public class IsolationLevelTest {
 
             System.out.println("Thread 1 - Releyendo");
             Personaje personajeAgain = dao.recuperar(maguin.getId());
-            // En READ_COMMITED, Thread 1 ve el cambio que thread 2 ya commiteo
-            assertEquals("MaguinUpdated", personajeAgain.getNombre());
 
-            personajeAgain.setNombre("Sarazan");
-            System.out.println("Thread 1 - Updateando Maguin a Sarazan");
-            dao.guardar(personajeAgain);
+            assertNull(personajeAgain);
         }, () -> System.out.println("Thread 1 - Termino"));
 
         // Thread 2
@@ -132,8 +123,7 @@ public class IsolationLevelTest {
             Personaje personaje2 = dao.recuperar(maguin.getId());
 
             System.out.println("Thread 2 - Updateando Maguin a MaguinUpdated");
-            personaje2.setNombre("MaguinUpdated");
-            dao.guardar(personaje2);
+            dao.eliminar(personaje2);
         }, () -> {
             System.out.println("Thread 2 - Terminando y delockeando thread 1");
             concurrencyHelper.signalThread1ToResume();
@@ -142,8 +132,8 @@ public class IsolationLevelTest {
         concurrencyHelper.shutdown();
         System.out.println("Se terminaron ambas transacciones, continuando...");
 
-        Personaje updatedPersonaje = service.recuperarPersonaje(maguin.getId());
-        assertEquals("Sarazan", updatedPersonaje.getNombre());
+        Personaje deletedPersonaje = service.recuperarPersonaje(maguin.getId());
+        assertNull(deletedPersonaje);
     }
 
     @Test
@@ -167,11 +157,7 @@ public class IsolationLevelTest {
             Personaje personajeAgain = dao.recuperar(maguin.getId());
 
             // En READ_UNCOMMITTED, Thread 1 deberia ver los cambios no comiteados por el thread 2
-            assertEquals("MaguinUpdated", personajeAgain.getNombre());
-
-            personajeAgain.setNombre("Sarazan");
-            System.out.println("Thread 1 - Updateando Maguin a Sarazan");
-            dao.guardar(personajeAgain);
+            assertNull(personajeAgain);
             concurrencyHelper.signalThread2ToResume(); // le avisamos a thread 2 que siga y comitee
         }, () -> {
             System.out.println("Thread 1 - Termino");
@@ -185,8 +171,7 @@ public class IsolationLevelTest {
             Personaje personaje2 = dao.recuperar(maguin.getId());
 
             System.out.println("Thread 2 - Updateando Maguin a MaguinUpdated");
-            personaje2.setNombre("MaguinUpdated");
-            dao.guardar(personaje2);
+            dao.eliminar(personaje2);
 
             // Se envian los cambios NO comiteados a la base de datos
             HibernateTransactionRunner.getCurrentSession().flush();
@@ -201,13 +186,11 @@ public class IsolationLevelTest {
         concurrencyHelper.shutdown();
         System.out.println("Se terminaron ambas transacciones, continuando...");
 
-        Personaje updatedPersonaje = service.recuperarPersonaje(maguin.getId());
-        assertEquals("Sarazan", updatedPersonaje.getNombre());
+        Personaje deletedPersonaje = service.recuperarPersonaje(maguin.getId());
+        assertNull(deletedPersonaje);
     }
 
-    // Este test nunca temrina porque el nivel de aislamiento SERIALIZABLE bloquea la escritura de Thread 2
-    // y Thread 1 no puede terminar hasta que Thread 2 termine. Deadlock!
-//    @Test
+    @Test
     void serializableIsolation() throws InterruptedException {
         // Thread 1
         concurrencyHelper.runInTransaction(Connection.TRANSACTION_SERIALIZABLE, () -> {
@@ -215,13 +198,13 @@ public class IsolationLevelTest {
 
             Personaje personaje1 = dao.recuperar(maguin.getId());
             assertEquals("Maguin", personaje1.getNombre());
+            dao.eliminar(personaje1);
 
             System.out.println("Thread 1 - Lockeandose");
             concurrencyHelper.signalThread2ToStart();
             concurrencyHelper.waitForThread1ToResume();
             System.out.println("Thread 1 - De-Lockeado");
-            // Thread 1 nunca llega a des-lockearse
-
+            // Thread 1 no se deslockea hasta que thread 2 lo haga
         }, () -> System.out.println("Thread 1 - Termino"));
 
         // Thread 2
@@ -233,17 +216,15 @@ public class IsolationLevelTest {
             System.out.println("Thread 2 - Updateando Maguin a MaguinUpdated");
             personaje2.setNombre("MaguinUpdated");
             dao.guardar(personaje2);
-
-            // Thread 2 se lockea al intentar guardar el personaje y la base de datos no lo liberara
-            // hasta que termine el thread 1.
-
-        }, () -> {
-            System.out.println("Thread 2 - Terminando y delockeando thread 1");
             concurrencyHelper.signalThread1ToResume();
+        }, () -> {
+            System.out.println("Thread 2 - Terminando");
         });
 
         // Esperamos a que ambos threads terminen
         concurrencyHelper.shutdown();
+        Personaje deletedPersonaje = service.recuperarPersonaje(maguin.getId());
+        assertNull(deletedPersonaje);
     }
 
 
