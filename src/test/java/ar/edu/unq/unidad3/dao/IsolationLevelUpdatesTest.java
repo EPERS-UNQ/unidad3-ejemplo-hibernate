@@ -23,6 +23,8 @@ public class IsolationLevelUpdatesTest {
     private TransactionConcurrencyHelper concurrencyHelper;
 
     private Personaje maguin;
+
+    private Personaje debilucho;
     private Item baculo;
 
     @BeforeEach
@@ -40,6 +42,8 @@ public class IsolationLevelUpdatesTest {
 
         maguin = new Personaje("Maguin", 10, 70);
         service.guardarPersonaje(maguin);
+        debilucho = new Personaje("Debilucho", 50, 10);
+        service.guardarPersonaje(debilucho);
     }
 
     @Test
@@ -205,7 +209,7 @@ public class IsolationLevelUpdatesTest {
         assertEquals("Sarazan", updatedPersonaje.getNombre());
     }
 
-//     Este test nunca temrina porque el nivel de aislamiento SERIALIZABLE bloquea la escritura de Thread 2
+//     Este test tarda en teminar porque el nivel de aislamiento SERIALIZABLE bloquea la escritura de Thread 2
 //     y Thread 1 no puede terminar hasta que Thread 2 termine. Deadlock!... por 50 secs aprox, y hace rollback de la transaccion.
     @Test
     void serializableIsolation() throws InterruptedException {
@@ -249,6 +253,63 @@ public class IsolationLevelUpdatesTest {
         assertEquals("Sarazan", updatedPersonaje.getNombre());
     }
 
+
+    // Tenemos un doble lock aca
+    // Thread 1 obtiene el lock de Maguin, y thread 2 obtiene el lock de Debilucho
+    // Pero despues thread 1 quiere modificar a Debilucho, y thread 2 quiere modificar a Maguin.
+    // El primero en commitear (en este caso, thread 1), quedara lockeado, y cuando expire, hara rollback, perdiendo su lock.
+    // Por eso al final, thread 2 termina efectivizando sus cambios.
+
+    @Test
+    void serializableIsolationWriteWriteConflict() throws InterruptedException {
+        // Thread 1
+        concurrencyHelper.runInTransaction(Connection.TRANSACTION_SERIALIZABLE, () -> {
+            System.out.println("Thread 1 - Primera lectura");
+
+            Personaje personaje1 = dao.recuperar(maguin.getId());
+            personaje1.setNombre("Sarazan");
+            dao.guardar(personaje1);
+
+            System.out.println("Thread 1 - Lockeandose");
+            concurrencyHelper.signalThread2ToStart();
+            concurrencyHelper.waitForThread1ToResume();
+            System.out.println("Thread 1 - De-Lockeado");
+
+            Personaje personaje2 = dao.recuperar(debilucho.getId());
+            personaje2.setNombre("MechaDebilucho");
+            dao.guardar(personaje2);
+
+        }, () -> {
+            System.out.println("Thread 1 - Termino");
+            concurrencyHelper.signalThread2ToResume();
+                }
+        );
+
+        // Thread 2
+        concurrencyHelper.runInTransaction(Connection.TRANSACTION_SERIALIZABLE, () -> {
+            concurrencyHelper.waitForThread2ToStart();
+
+            System.out.println("Thread 2 - Leyendo y Updateando Debilucho a DebiluchoUpdated");
+            Personaje personaje2 = dao.recuperar(debilucho.getId());
+            personaje2.setNombre("DebiluchoUpdated");
+            dao.guardar(personaje2);
+
+            System.out.println("Thread 2 - Leyendo y Updateando Maguin a MaguinUpdated");
+            Personaje personaje1 = dao.recuperar(maguin.getId());
+            personaje1.setNombre("MaguinUpdated");
+            dao.guardar(personaje1);
+
+            concurrencyHelper.signalThread1ToResume();
+            concurrencyHelper.waitForThread2ToResume();
+        }, () -> {
+            System.out.println("Thread 2 - Terminando y delockeando thread 1");
+        });
+
+        // Esperamos a que ambos threads terminen
+        concurrencyHelper.shutdown();
+        Personaje updatedPersonaje = service.recuperarPersonaje(maguin.getId());
+        assertEquals("MaguinUpdated", updatedPersonaje.getNombre());
+    }
 
     @AfterEach
     void cleanup() {
