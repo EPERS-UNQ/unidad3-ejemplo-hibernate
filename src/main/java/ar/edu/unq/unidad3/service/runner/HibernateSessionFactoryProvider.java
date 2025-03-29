@@ -18,7 +18,7 @@ public class HibernateSessionFactoryProvider {
 
     private HibernateSessionFactoryProvider() {
         String user = "postgres";
-        String password = "postgres";
+        String password = "root";
         String dataBase = "epers_ejemplo_hibernate";
         String host = "localhost";
         String port = "5432";
