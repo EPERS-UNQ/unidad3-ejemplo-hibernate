@@ -11,6 +11,10 @@ public interface InventarioService {
     void guardarPersonaje(Personaje personaje);
     Personaje recuperarPersonaje(Long personajeId);
     void recoger(Long personajeId, Long itemId);
+    void eliminarPersonaje(Personaje personaje);
+    void eliminarItem(Item item);
+
+    void eliminarTodo();
     Collection<Item> getMasPesdos(int peso);
     Collection<Item> getItemsPersonajesDebiles(int vida);
     ItemsPaginados recuperarPaginados(int elementosPorPagina, int pagina);

@@ -89,7 +89,5 @@ public class InventarioServiceImpl implements InventarioService {
             personajeDAO.eliminarTodo();
             return null;
         });
-    };
-
+    }
 }
-
