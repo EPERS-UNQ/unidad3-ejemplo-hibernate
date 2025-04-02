@@ -7,6 +7,7 @@ import ar.edu.unq.unidad3.modelo.Personaje;
 import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner;
 
 import java.util.Collection;
+import java.util.List;
 
 public class InventarioServiceImpl implements InventarioService {
 
@@ -71,26 +72,16 @@ public class InventarioServiceImpl implements InventarioService {
     }
 
     @Override
-    public void eliminarPersonaje(Personaje personaje){
-        HibernateTransactionRunner.runTrx(() -> {
-            personajeDAO.eliminar(personaje);
-            return null;
-        });
-    }
-    @Override
-    public void eliminarItem(Item item){
-        HibernateTransactionRunner.runTrx(() -> {
-            itemDAO.eliminar(item);
-            return null;
-        });
-    }
-
-    @Override
     public void eliminarTodo(){
         HibernateTransactionRunner.runTrx(() -> {
             itemDAO.eliminarTodo();
             personajeDAO.eliminarTodo();
             return null;
         });
+    }
+    
+    @Override
+    public List<Personaje> recuperarTodosPersonajes() {
+        return HibernateTransactionRunner.runTrx(() -> personajeDAO.recuperarTodos());
     }
 }

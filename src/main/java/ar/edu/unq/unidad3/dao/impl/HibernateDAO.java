@@ -1,8 +1,9 @@
 package ar.edu.unq.unidad3.dao.impl;
 
 import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner;
-import jakarta.persistence.LockModeType;
 import org.hibernate.Session;
+
+import java.util.List;
 
 public class HibernateDAO<T> {
 
@@ -29,5 +30,10 @@ public class HibernateDAO<T> {
     public void eliminarTodo() {
         Session session = HibernateTransactionRunner.getCurrentSession();
         session.createQuery("delete from " + entityType.getSimpleName()).executeUpdate();
+    }
+    
+    public List<T> recuperarTodos() {
+        Session session = HibernateTransactionRunner.getCurrentSession();
+        return session.createQuery("from " + entityType.getSimpleName(), entityType).list();
     }
 }

@@ -4,6 +4,8 @@ import ar.edu.unq.unidad3.modelo.Item;
 import ar.edu.unq.unidad3.modelo.Personaje;
 import jakarta.persistence.LockModeType;
 
+import java.util.List;
+
 public interface PersonajeDAO {
     void guardar(Personaje personaje);
 
@@ -14,4 +16,6 @@ public interface PersonajeDAO {
     Personaje findByIdWithLock(Long id, LockModeType lockModeType);
 
     void eliminarTodo();
+    
+    List<Personaje> recuperarTodos();
 }
