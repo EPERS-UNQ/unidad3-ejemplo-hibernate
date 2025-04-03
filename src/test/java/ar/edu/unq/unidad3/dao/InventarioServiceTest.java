@@ -6,11 +6,20 @@ import ar.edu.unq.unidad3.modelo.Item;
 import ar.edu.unq.unidad3.modelo.Personaje;
 import ar.edu.unq.unidad3.modelo.exception.MuchoPesoException;
 import ar.edu.unq.unidad3.service.InventarioServiceImpl;
+import ar.edu.unq.unidad3.service.runner.HibernateSessionFactoryProvider;
+import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner;
+import org.hibernate.NonUniqueObjectException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.PersistentObjectException;
+import org.hibernate.TransientObjectException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.hibernate.exception.ConstraintViolationException;
+import jakarta.persistence.PersistenceException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,6 +106,46 @@ public class InventarioServiceTest {
     @Test
     void siUnPersonajeAgarraMasPesoDelQuePuedeLlevarSeLanzaMuchoPesoException () {
         assertThrows(MuchoPesoException.class, () -> service.recoger(maguin.getId(), tunica.getId()));
+    }
+
+    @Test
+    void testEstadoPersistentYSincronizacion() {
+        HibernateTransactionRunner.runTrx(() -> {
+            Session session = HibernateTransactionRunner.getCurrentSession();
+            
+            // Recuperamos una entidad existente (está en estado "persistent" en esta sesión)
+            Personaje persistentPersonaje = session.get(Personaje.class, maguin.getId());
+            
+            // Modificamos la entidad
+            persistentPersonaje.setNombre("Nombre modificado");
+            
+            // No necesitamos llamar a save/update explícitamente, Hibernate hace flush automático
+            // al final de la transacción
+            
+            return null;
+        });
+        
+        // Verificamos que los cambios se guardaron al final de la transacción
+        Personaje personajeRecuperado = service.recuperarPersonaje(maguin.getId());
+        assertEquals("Nombre modificado", personajeRecuperado.getNombre(), 
+                    "Los cambios deben persistirse automáticamente al final de la transacción");
+    }
+
+    @Test
+    void testProblemaConSaveYEntidadesDetached() {
+        Long maguinId = maguin.getId();
+
+        // Cambiamos el nombre en la entidad detached
+        maguin.setNombre("Maguin Modificado");
+
+        // Intentamos guardar la entidad modificada usando save()
+        service.guardarPersonaje(maguin);
+
+        // Verificamos que el cambio NO se guardó en la base de datos
+        // Esto demuestra que save() no actualiza correctamente entidades detached
+        Personaje verificacionPostSave = service.recuperarPersonaje(maguinId);
+        assertEquals("Maguin", verificacionPostSave.getNombre(),
+                "save() no debe actualizar entidades detached, el nombre debe seguir siendo el original");
     }
 
     @AfterEach
