@@ -6,8 +6,8 @@ BEGIN;
 -- e insertar a Gimli quien ya esta esperando en el consejo de Elrond
 UPDATE personaje SET vida = 30 WHERE nombre = 'Frodo';
 
-INSERT INTO personaje (nombre, pesomaximo, xp, vida) VALUES
-    ('Gimli', 200, 600, 250);
+INSERT INTO personaje (nombre, pesomaximo, vida) VALUES
+    ('Gimli', 200, 250);
 
 -- Confirmar el cambio inmediatamente
 COMMIT;

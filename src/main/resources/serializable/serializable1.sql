@@ -1,23 +1,24 @@
 -- Reiniciar datos
 TRUNCATE personaje RESTART IDENTITY CASCADE;
-INSERT INTO personaje (nombre, pesomaximo, xp, vida) VALUES
-                                                         ('Frodo', 50, 100, 80),
-                                                         ('Gandalf', 70, 1000, 200),
-                                                         ('Aragorn', 100, 800, 150);
+INSERT INTO personaje (nombre, pesomaximo, vida) VALUES
+                                                         ('Frodo', 50, 80),
+                                                         ('Gandalf', 70, 200),
+                                                         ('Aragorn', 100, 150);
 
 -- Iniciar transacción con SERIALIZABLE
 BEGIN;
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
--- Calcular suma actual de XP
-SELECT SUM(xp) AS total_xp FROM personaje;
--- Mostrará 1900
+-- Calcular suma actual de vida
+SELECT SUM(vida) AS total_vida FROM personaje;
+-- Mostrará 430
 
--- Basado en esto, decidimos que podemos agregar un personaje con 1000 XP
--- (ya que 1900 + 1000 < 3000)
-SELECT pg_sleep(15); -- Pausa para que T2 ejecute su consulta
+-- Basado en esto, decidimos que podemos nuestros heroes andan bajos de vida,
+-- y necesitamos agregar un nuevo personaje para que los ayude
+-- PERO ANTES DE QUE ESTO SUCEDA
+-- Un usuario nuevo comenzo otra transaccion...
 
-INSERT INTO personaje (nombre, pesomaximo, xp, vida)
-VALUES ('Legolas', 80, 1000, 120);
+INSERT INTO personaje (nombre, pesomaximo, vida)
+VALUES ('Legolas', 80, 120);
 
 COMMIT;

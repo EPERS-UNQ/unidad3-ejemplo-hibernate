@@ -2,13 +2,13 @@
 BEGIN;
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
--- Calcular suma actual de XP
-SELECT SUM(xp) AS total_xp FROM personaje;
--- Mostrará 1900
+-- Calcular suma actual de vida
+SELECT SUM(vida) AS total_vida FROM personaje;
+-- Mostrará 430
 
--- Basado en esto, decidimos que podemos agregar un personaje con 900 XP
--- (ya que 1900 + 900 < 3000)
-INSERT INTO personaje (nombre, pesomaximo, xp, vida)
-VALUES ('Gimli', 90, 900, 140);
+-- Basado en esto, decidimos que podemos nuestros heroes andan bajos de vida,
+-- y necesitamos agregar un nuevo personaje para que los ayude
+INSERT INTO personaje (nombre, pesomaximo,vida)
+VALUES ('Gimli', 90, 140);
 
 COMMIT;

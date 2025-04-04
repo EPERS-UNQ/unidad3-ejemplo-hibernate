@@ -6,10 +6,10 @@ TRUNCATE personaje RESTART IDENTITY CASCADE;
 -- Y el fenomeno de Lectura no repetida y lectura fantasma.
 
 -- Arrancamos con un set de datos de prueba
-INSERT INTO personaje (nombre, pesomaximo, xp, vida) VALUES
-                                                         ('Frodo', 50, 100, 80),
-                                                         ('Gandalf', 70, 1000, 200),
-                                                         ('Aragorn', 100, 800, 150);
+INSERT INTO personaje (nombre, pesomaximo, vida) VALUES
+                                                     ('Frodo', 50, 80),
+                                                     ('Gandalf', 70, 200),
+                                                     ('Aragorn', 100, 150);
 
 -- Iniciar transacción con READ COMMITTED
 BEGIN;
