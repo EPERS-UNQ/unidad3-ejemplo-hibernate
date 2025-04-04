@@ -21,6 +21,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.hibernate.exception.ConstraintViolationException;
 import jakarta.persistence.PersistenceException;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -146,6 +148,24 @@ public class InventarioServiceTest {
         Personaje verificacionPostSave = service.recuperarPersonaje(maguinId);
         assertEquals("Maguin", verificacionPostSave.getNombre(),
                 "save() no debe actualizar entidades detached, el nombre debe seguir siendo el original");
+    }
+
+    @Test
+    void testProblemaConCascadeYEntidadesDetach() {
+        // Se persisten otro item en otra sesión, dejandolos a todos en Detach, pero disponibles a nivel instancia
+        var espada = new Item("Contrato Virtuoso", 29);
+        service.guardarItem(espada);
+
+        // Transient
+        Personaje otroPersonaje = new Personaje("Magatito",  10, 70);
+
+        // Se añaden instancias en Detach al inventario de la entidad Transient a nivel de memoria
+        otroPersonaje.setInventario(Set.of(baculo, tunica, espada));
+
+        service.guardarPersonaje(otroPersonaje);
+        Personaje otroPersonajeRecuperado = service.recuperarPersonaje(otroPersonaje.getId());
+
+        assertTrue(otroPersonajeRecuperado.getInventario().isEmpty());
     }
 
     @AfterEach
