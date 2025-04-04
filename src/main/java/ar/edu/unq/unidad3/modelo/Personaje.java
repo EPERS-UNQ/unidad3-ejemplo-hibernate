@@ -9,11 +9,15 @@ import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor @ToString
 
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+//InheritanceType.SINGLE_TABLE
+//InheritanceType.TABLE_PER_CLASS
+//InheritanceType.JOINED
 @Entity
-public class Personaje {
+public abstract class Personaje {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false, length = 500)
     private String nombre;
