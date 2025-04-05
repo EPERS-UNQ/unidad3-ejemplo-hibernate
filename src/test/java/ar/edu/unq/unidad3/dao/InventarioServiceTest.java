@@ -6,20 +6,13 @@ import ar.edu.unq.unidad3.modelo.Item;
 import ar.edu.unq.unidad3.modelo.Personaje;
 import ar.edu.unq.unidad3.modelo.exception.MuchoPesoException;
 import ar.edu.unq.unidad3.service.InventarioServiceImpl;
-import ar.edu.unq.unidad3.service.runner.HibernateSessionFactoryProvider;
 import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner;
-import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.PersistentObjectException;
-import org.hibernate.TransientObjectException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.hibernate.exception.ConstraintViolationException;
-import jakarta.persistence.PersistenceException;
 
 import java.util.Set;
 
@@ -115,11 +108,11 @@ public class InventarioServiceTest {
         HibernateTransactionRunner.runTrx(() -> {
             Session session = HibernateTransactionRunner.getCurrentSession();
             
-            // Recuperamos una entidad existente (está en estado "persistent" en esta sesión)
-            Personaje persistentPersonaje = session.get(Personaje.class, maguin.getId());
+            // Recuperamos una entidad existente (está en estado "managed" en esta sesión)
+            Personaje managed = session.get(Personaje.class, maguin.getId());
             
             // Modificamos la entidad
-            persistentPersonaje.setNombre("Nombre modificado");
+            managed.setNombre("Nombre modificado");
             
             // No necesitamos llamar a save/update explícitamente, Hibernate hace flush automático
             // al final de la transacción
