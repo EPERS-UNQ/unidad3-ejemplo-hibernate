@@ -1,6 +1,6 @@
-package ar.edu.unq.unidad3.dao.impl;
+package ar.edu.unq.unidad3.persistencia.dao.impl;
 
-import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner;
+import ar.edu.unq.unidad3.service.runner.HibernateSessionContext;
 import org.hibernate.Session;
 
 public class HibernateDAO<T> {
@@ -12,21 +12,21 @@ public class HibernateDAO<T> {
     }
 
     public void guardar(T entity) {
-        Session session = HibernateTransactionRunner.getCurrentSession();
+        Session session = HibernateSessionContext.getCurrentSession();
         session.save(entity);
     }
 
     public T recuperar(Long id) {
-        Session session = HibernateTransactionRunner.getCurrentSession();
+        Session session = HibernateSessionContext.getCurrentSession();
         return session.get(entityType, id);
     }
 
     public void eliminar(T entity) {
-        Session session = HibernateTransactionRunner.getCurrentSession();
+        Session session = HibernateSessionContext.getCurrentSession();
         session.remove(entity);
     }
     public void eliminarTodo() {
-        Session session = HibernateTransactionRunner.getCurrentSession();
+        Session session = HibernateSessionContext.getCurrentSession();
         session.createQuery("delete from " + entityType.getSimpleName()).executeUpdate();
     }
 }

@@ -1,7 +1,7 @@
-package ar.edu.unq.unidad3.dao;
+package ar.edu.unq.unidad3.persistencia.dao;
 
-import ar.edu.unq.unidad3.dao.impl.HibernateItemDAO;
-import ar.edu.unq.unidad3.dao.impl.HibernatePersonajeDAO;
+import ar.edu.unq.unidad3.persistencia.dao.impl.HibernateItemDAO;
+import ar.edu.unq.unidad3.persistencia.dao.impl.HibernatePersonajeDAO;
 import ar.edu.unq.unidad3.modelo.Item;
 import ar.edu.unq.unidad3.modelo.Personaje;
 import ar.edu.unq.unidad3.modelo.exception.MuchoPesoException;
@@ -9,8 +9,6 @@ import ar.edu.unq.unidad3.service.InventarioServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import static org.junit.jupiter.api.Assertions.*;
 
