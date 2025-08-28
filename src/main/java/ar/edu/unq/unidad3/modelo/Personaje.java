@@ -7,13 +7,15 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import static jakarta.persistence.GenerationType.*;
+
 @Getter @Setter @NoArgsConstructor @ToString
 
 @Entity
 public class Personaje {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = AUTO)
     private Long id;
     @Column(nullable = false, length = 500)
     private String nombre;
