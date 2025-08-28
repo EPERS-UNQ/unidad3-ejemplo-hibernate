@@ -3,12 +3,14 @@ package ar.edu.unq.unidad3.modelo;
 import jakarta.persistence.*;
 import lombok.*;
 
+import static jakarta.persistence.GenerationType.AUTO;
+
 @Getter @Setter @NoArgsConstructor @EqualsAndHashCode @ToString
 
 @Entity
 public final class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = AUTO)
     private Long id;
 
     private String nombre;
