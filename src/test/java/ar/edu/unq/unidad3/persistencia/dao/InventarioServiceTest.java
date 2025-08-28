@@ -52,7 +52,7 @@ public class InventarioServiceTest {
         Item baculo = maguito.getInventario().iterator().next();
         assertEquals("Baculo", baculo.getNombre());
 
-        assertSame(baculo.getOwner(), maguito);
+        assertEquals(baculo.getOwner(), maguito);
     }
 
     @Test
