@@ -17,9 +17,13 @@ public class HibernateTransactionRunner {
             tx.rollback();
             throw e;
         } finally {
-            session.close();
-            HibernateSessionContext.clearCurrentSession();
+            closeSession(session);
         }
+    }
+
+    private static void closeSession(Session session) {
+        session.close();
+        HibernateSessionContext.clearCurrentSession();
     }
 
     @FunctionalInterface
