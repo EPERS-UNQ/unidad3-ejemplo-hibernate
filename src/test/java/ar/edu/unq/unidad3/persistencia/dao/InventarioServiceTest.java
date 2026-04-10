@@ -5,7 +5,8 @@ import ar.edu.unq.unidad3.persistencia.dao.impl.HibernatePersonajeDAO;
 import ar.edu.unq.unidad3.modelo.Item;
 import ar.edu.unq.unidad3.modelo.Personaje;
 import ar.edu.unq.unidad3.modelo.exception.MuchoPesoException;
-import ar.edu.unq.unidad3.service.InventarioServiceImpl;
+import ar.edu.unq.unidad3.service.impl.ItemServiceImpl;
+import ar.edu.unq.unidad3.service.impl.PersonajeServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InventarioServiceTest {
 
-    private InventarioServiceImpl service;
+    private PersonajeServiceImpl personajeService;
+    private ItemServiceImpl itemService;
     private Personaje maguin;
     private Personaje debilucho;
     private Item baculo;
@@ -22,29 +24,36 @@ public class InventarioServiceTest {
 
     @BeforeEach
     void prepare() {
-        this.service = new InventarioServiceImpl(
+        this.personajeService = new PersonajeServiceImpl(
                 new HibernatePersonajeDAO(),
                 new HibernateItemDAO()
         );
+        this.itemService = new ItemServiceImpl(
+                new HibernateItemDAO()
+        );
+
+        maguin = new Personaje("Maguin",  10, 70);
+        personajeService.guardarPersonaje(maguin);
+
+        debilucho = new Personaje("Debilucho", 1, 1000);
+        personajeService.guardarPersonaje(debilucho);
 
         tunica = new Item("Tunica", 100);
         baculo = new Item("Baculo", 50);
 
-        service.guardarItem(tunica);
-        service.guardarItem(baculo);
+        itemService.guardarItem(tunica);
+        itemService.guardarItem(baculo);
 
-        maguin = new Personaje("Maguin",  10, 70);
-        service.guardarPersonaje(maguin);
 
-        debilucho = new Personaje("Debilucho", 1, 1000);
-        service.guardarPersonaje(debilucho);
+
+
     }
 
     @Test
     void testRecoger() {
-        service.recoger(maguin.getId(), baculo.getId());
+        personajeService.recoger(maguin.getId(), baculo.getId());
 
-        Personaje maguito = service.recuperarPersonaje(maguin.getId());
+        Personaje maguito = personajeService.recuperarPersonaje(maguin.getId());
         assertEquals("Maguin", maguito.getNombre());
 
         assertEquals(1, maguito.getInventario().size());
@@ -57,7 +66,7 @@ public class InventarioServiceTest {
 
     @Test
     void testGetAll() {
-        var items = service.allItems();
+        var items = itemService.allItems();
 
         assertEquals(2, items.size());
         assertTrue(items.contains(baculo));
@@ -65,39 +74,41 @@ public class InventarioServiceTest {
 
     @Test
     void testGetMasPesados() {
-        var items = service.getMasPesdos(10);
+        var items = itemService.getMasPesdos(10);
         assertEquals(2, items.size());
 
-        var items2 = service.getMasPesdos(80);
+        var items2 = itemService.getMasPesdos(80);
         assertEquals(1, items2.size());
     }
 
     @Test
     void testGetItemsDebiles() {
-        var items = service.getItemsPersonajesDebiles(5);
+        var items = itemService.getItemsPersonajesDebiles(5);
         assertEquals(0, items.size());
 
-        service.recoger(maguin.getId(), baculo.getId());
-        service.recoger(debilucho.getId(), tunica.getId());
+        personajeService.recoger(maguin.getId(), baculo.getId());
+        personajeService.recoger(debilucho.getId(), tunica.getId());
 
-        items = service.getItemsPersonajesDebiles(5);
+        items = itemService.getItemsPersonajesDebiles(5);
         assertEquals(1, items.size());
         assertEquals("Tunica", items.iterator().next().getNombre());
     }
 
     @Test
     void testGetMasPesado() {
-        Item item = service.heaviestItem();
+        Item item = itemService.heaviestItem();
         assertEquals("Tunica", item.getNombre());
     }
 
     @Test
     void siUnPersonajeAgarraMasPesoDelQuePuedeLlevarSeLanzaMuchoPesoException () {
-        assertThrows(MuchoPesoException.class, () -> service.recoger(maguin.getId(), tunica.getId()));
+        assertThrows(MuchoPesoException.class, () -> personajeService.recoger(maguin.getId(), tunica.getId()));
     }
 
     @AfterEach
     void cleanup() {
-        service.eliminarTodo();
+
+        itemService.eliminarTodos();
+        personajeService.eliminarTodos();
     }
 }
