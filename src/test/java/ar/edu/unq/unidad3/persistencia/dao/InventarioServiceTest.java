@@ -74,10 +74,10 @@ public class InventarioServiceTest {
 
     @Test
     void testGetMasPesados() {
-        var items = itemService.getMasPesdos(10);
+        var items = itemService.getMasPesados(10);
         assertEquals(2, items.size());
 
-        var items2 = itemService.getMasPesdos(80);
+        var items2 = itemService.getMasPesados(80);
         assertEquals(1, items2.size());
     }
 

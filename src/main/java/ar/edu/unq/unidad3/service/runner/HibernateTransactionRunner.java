@@ -2,6 +2,8 @@ package ar.edu.unq.unidad3.service.runner;
 
 import org.hibernate.Session;
 
+import java.io.IOException;
+
 public class HibernateTransactionRunner {
 
     public static <T> T runTrx(TransactionBlock<T> bloque) {
@@ -13,9 +15,9 @@ public class HibernateTransactionRunner {
             T resultado = bloque.execute();
             tx.commit();
             return resultado;
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             tx.rollback();
-            throw e;
+            throw e instanceof RuntimeException re ? re : new RuntimeException(e);
         } finally {
             closeSession(session);
         }
@@ -28,6 +30,6 @@ public class HibernateTransactionRunner {
 
     @FunctionalInterface
     public interface TransactionBlock<T> {
-        T execute();
+        T execute() throws IOException;
     }
 }

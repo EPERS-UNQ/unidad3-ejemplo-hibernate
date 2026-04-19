@@ -7,11 +7,12 @@ import java.util.Collection;
 public interface ItemService {
 
     void guardarItem(Item item);
+    Item recuperar(Long id);
     Collection<Item> allItems();
     void eliminarItem(Item item);
     void eliminarTodos();
     Item heaviestItem();
-    Collection<Item> getMasPesdos(int peso);
+    Collection<Item> getMasPesados(int peso);
     Collection<Item> getItemsPersonajesDebiles(int vida);
 
 }

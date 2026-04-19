@@ -24,6 +24,11 @@ public class ItemServiceImpl implements ItemService {
         });
     }
     @Override
+    public Item recuperar(Long id) {
+        return HibernateTransactionRunner.runTrx(() -> itemDAO.recuperar(id));
+    }
+
+    @Override
     public Collection<Item> allItems() {
         return HibernateTransactionRunner.runTrx(() -> itemDAO.getAll());
     }
@@ -51,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<Item> getMasPesdos(int peso) {
+    public Collection<Item> getMasPesados(int peso) {
         return HibernateTransactionRunner.runTrx(()
                 -> itemDAO.getMasPesados(peso));
     }
