@@ -5,7 +5,7 @@ import lombok.*;
 
 import static jakarta.persistence.GenerationType.AUTO;
 
-@Getter @Setter @NoArgsConstructor @EqualsAndHashCode @ToString
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
 
 @Entity
 public final class Item {
@@ -22,5 +22,10 @@ public final class Item {
     public Item(@NonNull String nombre,  @NonNull Integer peso) {
         this.nombre = nombre;
         this.peso = peso;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + id + "] {" + nombre + " | Peso: " + peso + " | Owner: " + owner.getNombre() + "}" ;
     }
 }

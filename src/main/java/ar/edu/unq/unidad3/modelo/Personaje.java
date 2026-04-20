@@ -9,7 +9,7 @@ import java.util.Set;
 
 import static jakarta.persistence.GenerationType.*;
 
-@Getter @Setter @NoArgsConstructor @ToString
+@Getter @Setter @NoArgsConstructor
 
 @Entity
 public class Personaje {
@@ -47,4 +47,9 @@ public class Personaje {
         item.setOwner(this);
     }
 
+    @Override
+    public String toString() {
+        var info = inventario.stream().map(i -> new Pair(i.getId(), i.getNombre())).toList();
+        return "[" + id + "] {" + nombre + " | HP: " + vida + " | PM: " + pesoMaximo + " | Items asociados: " + info + "}" ;
+    }
 }

@@ -10,14 +10,29 @@ import ar.edu.unq.unidad3.service.impl.ItemServiceImpl;
 import ar.edu.unq.unidad3.service.impl.PersonajeServiceImpl;
 import ar.edu.unq.unidad3.service.runner.HibernateSessionFactoryProvider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class REPL {
+
+    private static final Logger log = Logger.getLogger(REPL.class.getName());
+
+    static {
+        try {
+            FileHandler fh = new FileHandler("repl.log", true);
+            fh.setFormatter(new SimpleFormatter());
+            log.addHandler(fh);
+            log.setUseParentHandlers(false);
+        } catch (IOException e) {
+            System.err.println("[!] No se pudo inicializar el log: " + e.getMessage());
+        }
+    }
 
     // --- help strings (fuente de verdad para help y mensajes de error) ---
     private static final String HELP_CREATE_PERSONAJE = "create Personaje -n <nombre> -hp <vida> -str <pesoMaximo>";
@@ -51,6 +66,7 @@ public class REPL {
             String[] tokens = tokenize(line);
             String command = tokens[0].toLowerCase();
 
+            log.info("CMD: " + line);
             try {
                 switch (command) {
                     case "quit", "q" -> { return; }
@@ -86,13 +102,15 @@ public class REPL {
                         switch (tokens[1]) {
                             case "Personaje" -> {
                                 requireFlags(tokens, HELP_CREATE_PERSONAJE, "-n", "-hp", "-str");
-                                personajeService.guardarPersonaje(new Personaje(flag(tokens, "-n"), Integer.parseInt(flag(tokens, "-hp")), Integer.parseInt(flag(tokens, "-str"))));
-                                System.out.println("Personaje creado.");
+                                var personaje = new Personaje(flag(tokens, "-n"), Integer.parseInt(flag(tokens, "-hp")), Integer.parseInt(flag(tokens, "-str")));
+                                personajeService.guardarPersonaje(personaje);
+                                System.out.println("Personaje creado: " + personaje);
                             }
                             case "Item" -> {
                                 requireFlags(tokens, HELP_CREATE_ITEM, "-n", "-p");
-                                itemService.guardarItem(new Item(flag(tokens, "-n"), Integer.parseInt(flag(tokens, "-p"))));
-                                System.out.println("Item creado.");
+                                var item = new Item(flag(tokens, "-n"), Integer.parseInt(flag(tokens, "-p")));
+                                itemService.guardarItem(item);
+                                System.out.println("Item creado: " + item);
                             }
                             default -> System.out.println("Tipo desconocido: " + tokens[1]);
                         }
@@ -124,7 +142,7 @@ public class REPL {
                         if (tokens.length < 2) throw new IllegalArgumentException("Falta <idPersonaje> | help: " + HELP_LOOT);
                         if (tokens.length < 3) throw new IllegalArgumentException("Falta <idItem> | help: " + HELP_LOOT);
                         personajeService.recoger(Long.parseLong(tokens[1]), Long.parseLong(tokens[2]));
-                        System.out.println("Item recolectado.");
+                        System.out.println("Item " + itemService.recuperar(Long.parseLong(tokens[2])) + "recogido por " + personajeService.recuperarPersonaje(Long.parseLong(tokens[1])));
                     }
 
                     case "delete" -> {
@@ -140,8 +158,10 @@ public class REPL {
                     default -> System.out.println("Comando no reconocido. Usa help -p o help -i.");
                 }
             } catch (IllegalArgumentException e) {
+                log.warning("ARG_ERROR: " + e.getMessage());
                 System.err.println("[!] " + e.getMessage());
             } catch (Exception e) {
+                log.severe("ERROR: " + e.getMessage());
                 System.err.println("[!] Error inesperado: " + e.getMessage());
             }
         }
@@ -166,5 +186,16 @@ public class REPL {
     private static String flag(String[] tokens, String flag) {
         List<String> list = Arrays.asList(tokens);
         return tokens[list.indexOf(flag) + 1];
+    }
+
+    private static String[] tokenize(String line) {
+        List<String> tokens = new ArrayList<>();
+        Matcher m = Pattern.compile("\"([^\"]*)\"|'([^']*)'|(\\S+)").matcher(line);
+        while (m.find()) {
+            if (m.group(1) != null)      tokens.add(m.group(1));
+            else if (m.group(2) != null) tokens.add(m.group(2));
+            else                         tokens.add(m.group(3));
+        }
+        return tokens.toArray(new String[0]);
     }
 }
