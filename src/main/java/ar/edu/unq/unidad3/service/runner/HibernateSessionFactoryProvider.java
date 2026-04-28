@@ -4,11 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 
 public class HibernateSessionFactoryProvider {
@@ -49,13 +45,6 @@ public class HibernateSessionFactoryProvider {
             INSTANCE = new HibernateSessionFactoryProvider();
         }
         return INSTANCE;
-    }
-
-    public static void destroy() {
-        if (INSTANCE != null && INSTANCE.sessionFactory != null) {
-            INSTANCE.sessionFactory.close();
-        }
-        INSTANCE = null;
     }
 
     private void createDatabaseIfNotExists(String databaseName, String user, String password, String host, String port) {

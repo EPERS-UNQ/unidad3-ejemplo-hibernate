@@ -11,9 +11,14 @@ public class HibernateDAO<T> {
         this.entityType = entityType;
     }
 
-    public void guardar(T entity) {
+    public void crear(T entity) {
         Session session = HibernateSessionContext.getCurrentSession();
-        session.save(entity);
+        session.persist(entity);
+    }
+
+    public void actualizar(T entity) {
+        Session session = HibernateSessionContext.getCurrentSession();
+        session.merge(entity);
     }
 
     public T recuperar(Long id) {
@@ -25,6 +30,7 @@ public class HibernateDAO<T> {
         Session session = HibernateSessionContext.getCurrentSession();
         session.remove(entity);
     }
+
     public void eliminarTodo() {
         Session session = HibernateSessionContext.getCurrentSession();
         session.createQuery("delete from " + entityType.getSimpleName()).executeUpdate();

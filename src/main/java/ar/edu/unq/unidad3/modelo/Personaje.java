@@ -1,15 +1,18 @@
 package ar.edu.unq.unidad3.modelo;
 
 import ar.edu.unq.unidad3.modelo.exception.MuchoPesoException;
+import jakarta.persistence.*;
 import lombok.*;
 
-import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.GenerationType.AUTO;
 
-@Getter @Setter @NoArgsConstructor @ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 
 @Entity
 public class Personaje {
@@ -23,12 +26,10 @@ public class Personaje {
     private Integer vida;
     private Integer pesoMaximo;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "poseedor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Item> inventario = new HashSet<>();
 
-
-
-    public Personaje(@NonNull String nombre, @NonNull Integer vida,  @NonNull Integer pesoMaximo) {
+    public Personaje(@NonNull String nombre, @NonNull Integer vida, @NonNull Integer pesoMaximo) {
         this.nombre = nombre;
         this.vida = vida;
         this.pesoMaximo = pesoMaximo;
@@ -44,7 +45,7 @@ public class Personaje {
             throw new MuchoPesoException(this, item);
         }
         this.inventario.add(item);
-        item.setOwner(this);
+        item.setPoseedor(this);
     }
 
 }

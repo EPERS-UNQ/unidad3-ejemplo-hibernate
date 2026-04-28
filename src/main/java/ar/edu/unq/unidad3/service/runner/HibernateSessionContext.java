@@ -3,7 +3,7 @@ package ar.edu.unq.unidad3.service.runner;
 import org.hibernate.Session;
 
 public class HibernateSessionContext {
-    
+
     private static final ThreadLocal<Session> sessionThreadLocal = new ThreadLocal<>();
 
     public static void setCurrentSession(Session session) {

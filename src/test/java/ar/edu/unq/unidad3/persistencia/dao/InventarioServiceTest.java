@@ -33,27 +33,23 @@ public class InventarioServiceTest {
         );
 
         maguin = new Personaje("Maguin",  10, 70);
-        personajeService.guardarPersonaje(maguin);
+        personajeService.crear(maguin);
 
         debilucho = new Personaje("Debilucho", 1, 1000);
-        personajeService.guardarPersonaje(debilucho);
+        personajeService.crear(debilucho);
 
         tunica = new Item("Tunica", 100);
         baculo = new Item("Baculo", 50);
 
-        itemService.guardarItem(tunica);
-        itemService.guardarItem(baculo);
-
-
-
-
+        itemService.crear(tunica);
+        itemService.crear(baculo);
     }
 
     @Test
     void testRecoger() {
         personajeService.recoger(maguin.getId(), baculo.getId());
 
-        Personaje maguito = personajeService.recuperarPersonaje(maguin.getId());
+        Personaje maguito = personajeService.recuperar(maguin.getId());
         assertEquals("Maguin", maguito.getNombre());
 
         assertEquals(1, maguito.getInventario().size());
@@ -61,12 +57,12 @@ public class InventarioServiceTest {
         Item baculo = maguito.getInventario().iterator().next();
         assertEquals("Baculo", baculo.getNombre());
 
-        assertEquals(baculo.getOwner(), maguito);
+        assertEquals(baculo.getPoseedor(), maguito);
     }
 
     @Test
     void testGetAll() {
-        var items = itemService.allItems();
+        var items = itemService.recuperarTodos();
 
         assertEquals(2, items.size());
         assertTrue(items.contains(baculo));
@@ -74,10 +70,10 @@ public class InventarioServiceTest {
 
     @Test
     void testGetMasPesados() {
-        var items = itemService.getMasPesdos(10);
+        var items = itemService.getMasPesados(10);
         assertEquals(2, items.size());
 
-        var items2 = itemService.getMasPesdos(80);
+        var items2 = itemService.getMasPesados(80);
         assertEquals(1, items2.size());
     }
 
@@ -96,7 +92,7 @@ public class InventarioServiceTest {
 
     @Test
     void testGetMasPesado() {
-        Item item = itemService.heaviestItem();
+        Item item = itemService.getMasPesado();
         assertEquals("Tunica", item.getNombre());
     }
 
@@ -105,9 +101,30 @@ public class InventarioServiceTest {
         assertThrows(MuchoPesoException.class, () -> personajeService.recoger(maguin.getId(), tunica.getId()));
     }
 
+    @Test
+    void testActualizarPersonaje() {
+        maguin.setNombre("Maguito");
+        maguin.setVida(99);
+        personajeService.actualizar(maguin);
+
+        Personaje recuperado = personajeService.recuperar(maguin.getId());
+        assertEquals("Maguito", recuperado.getNombre());
+        assertEquals(99, recuperado.getVida());
+    }
+
+    @Test
+    void testActualizarItem() {
+        baculo.setNombre("Baculo Magico");
+        baculo.setPeso(10);
+        itemService.actualizar(baculo);
+
+        Item recuperado = itemService.recuperar(baculo.getId());
+        assertEquals("Baculo Magico", recuperado.getNombre());
+        assertEquals(10, recuperado.getPeso());
+    }
+
     @AfterEach
     void cleanup() {
-
         itemService.eliminarTodos();
         personajeService.eliminarTodos();
     }
