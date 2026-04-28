@@ -17,19 +17,28 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void guardarItem(Item item) {
+    public void crear(Item item) {
         HibernateTransactionRunner.runTrx(() -> {
-            itemDAO.guardar(item);
+            itemDAO.crear(item);
             return null;
         });
     }
+
     @Override
-    public Collection<Item> allItems() {
-        return HibernateTransactionRunner.runTrx(() -> itemDAO.getAll());
+    public void actualizar(Item item) {
+        HibernateTransactionRunner.runTrx(() -> {
+            itemDAO.actualizar(item);
+            return null;
+        });
     }
 
     @Override
-    public void eliminarItem(Item item) {
+    public Collection<Item> recuperarTodos() {
+        return HibernateTransactionRunner.runTrx(() -> itemDAO.recuperarTodos());
+    }
+
+    @Override
+    public void eliminar(Item item) {
         HibernateTransactionRunner.runTrx(() -> {
             itemDAO.eliminar(item);
             return null;
@@ -45,20 +54,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item heaviestItem() {
-        return HibernateTransactionRunner.runTrx(()
-                -> itemDAO.getHeaviestItem());
+    public Item getMasPesado() {
+        return HibernateTransactionRunner.runTrx(() -> itemDAO.getMasPesado());
     }
 
     @Override
-    public Collection<Item> getMasPesdos(int peso) {
-        return HibernateTransactionRunner.runTrx(()
-                -> itemDAO.getMasPesados(peso));
+    public Collection<Item> getMasPesados(int peso) {
+        return HibernateTransactionRunner.runTrx(() -> itemDAO.getMasPesados(peso));
     }
 
     @Override
     public Collection<Item> getItemsPersonajesDebiles(int vida) {
-        return HibernateTransactionRunner.runTrx(()
-                -> itemDAO.getItemsDePersonajesDebiles(vida));
+        return HibernateTransactionRunner.runTrx(() -> itemDAO.getItemsDePersonajesDebiles(vida));
     }
 }

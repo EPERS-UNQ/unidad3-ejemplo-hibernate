@@ -18,17 +18,24 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-    public void guardarPersonaje(Personaje personaje) {
+    public void crear(Personaje personaje) {
         HibernateTransactionRunner.runTrx(() -> {
-            personajeDAO.guardar(personaje);
+            personajeDAO.crear(personaje);
             return null;
         });
     }
 
     @Override
-    public Personaje recuperarPersonaje(Long personajeId) {
-        return HibernateTransactionRunner.runTrx(()->
-            personajeDAO.recuperar(personajeId));
+    public void actualizar(Personaje personaje) {
+        HibernateTransactionRunner.runTrx(() -> {
+            personajeDAO.actualizar(personaje);
+            return null;
+        });
+    }
+
+    @Override
+    public Personaje recuperar(Long personajeId) {
+        return HibernateTransactionRunner.runTrx(() -> personajeDAO.recuperar(personajeId));
     }
 
     @Override
@@ -37,14 +44,14 @@ public class PersonajeServiceImpl implements PersonajeService {
             Personaje personaje = personajeDAO.recuperar(personajeId);
             Item item = itemDAO.recuperar(itemId);
             personaje.recoger(item);
-            personajeDAO.guardar(personaje);
+            personajeDAO.actualizar(personaje);
             return null;
         });
     }
 
     @Override
-    public void eliminarPersonaje(Personaje personaje) {
-        HibernateTransactionRunner.runTrx(()-> {
+    public void eliminar(Personaje personaje) {
+        HibernateTransactionRunner.runTrx(() -> {
             personajeDAO.eliminar(personaje);
             return null;
         });

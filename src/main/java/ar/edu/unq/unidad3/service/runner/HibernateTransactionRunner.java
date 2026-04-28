@@ -8,7 +8,7 @@ public class HibernateTransactionRunner {
         Session session = HibernateSessionFactoryProvider.getInstance().createSession();
         HibernateSessionContext.setCurrentSession(session);
         var tx = session.beginTransaction();
-        
+
         try {
             T resultado = bloque.execute();
             tx.commit();
