@@ -1,6 +1,7 @@
 package ar.edu.unq.unidad3.service.impl;
 
 import ar.edu.unq.unidad3.modelo.Item;
+import ar.edu.unq.unidad3.modelo.Personaje;
 import ar.edu.unq.unidad3.persistencia.dao.ItemDAO;
 import ar.edu.unq.unidad3.service.ItemService;
 import ar.edu.unq.unidad3.service.runner.HibernateTransactionRunner;
@@ -30,6 +31,11 @@ public class ItemServiceImpl implements ItemService {
             itemDAO.actualizar(item);
             return null;
         });
+    }
+
+    @Override
+    public Item recuperar(Long itemId) {
+        return HibernateTransactionRunner.runTrx(() -> itemDAO.recuperar(itemId));
     }
 
     @Override

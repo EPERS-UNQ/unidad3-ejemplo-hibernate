@@ -10,6 +10,8 @@ public interface ItemService {
 
     void actualizar(Item item);
 
+    Item recuperar(Long itemId);
+
     Collection<Item> recuperarTodos();
 
     void eliminar(Item item);

@@ -118,10 +118,7 @@ public class InventarioServiceTest {
         baculo.setPeso(10);
         itemService.actualizar(baculo);
 
-        Item recuperado = itemService.recuperarTodos().stream()
-                .filter(i -> i.getId().equals(baculo.getId()))
-                .findFirst()
-                .orElseThrow();
+        Item recuperado = itemService.recuperar(baculo.getId());
         assertEquals("Baculo Magico", recuperado.getNombre());
         assertEquals(10, recuperado.getPeso());
     }
