@@ -11,7 +11,6 @@ import static jakarta.persistence.GenerationType.AUTO;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
 @ToString
 
 @Entity

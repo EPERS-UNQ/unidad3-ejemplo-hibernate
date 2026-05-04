@@ -61,11 +61,11 @@ public class InventarioServiceTest {
     }
 
     @Test
-    void testGetAll() {
+    void testRecuperarTodos() {
         var items = itemService.recuperarTodos();
 
         assertEquals(2, items.size());
-        assertTrue(items.contains(baculo));
+        assertTrue(items.stream().mapToLong(Item::getId).anyMatch(id -> id == baculo.getId()));
     }
 
     @Test
