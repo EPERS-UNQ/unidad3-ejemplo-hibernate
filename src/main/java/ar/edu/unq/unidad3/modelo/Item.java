@@ -1,11 +1,17 @@
 package ar.edu.unq.unidad3.modelo;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 import static jakarta.persistence.GenerationType.AUTO;
 
-@Getter @Setter @NoArgsConstructor @EqualsAndHashCode @ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 
 @Entity
 public final class Item {
@@ -17,9 +23,9 @@ public final class Item {
     private Integer peso;
 
     @ManyToOne
-    private Personaje owner;
+    private Personaje poseedor;
 
-    public Item(@NonNull String nombre,  @NonNull Integer peso) {
+    public Item(@NonNull String nombre, @NonNull Integer peso) {
         this.nombre = nombre;
         this.peso = peso;
     }

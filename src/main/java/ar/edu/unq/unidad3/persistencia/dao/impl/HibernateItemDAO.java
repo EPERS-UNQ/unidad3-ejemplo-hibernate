@@ -1,7 +1,7 @@
 package ar.edu.unq.unidad3.persistencia.dao.impl;
 
-import ar.edu.unq.unidad3.persistencia.dao.ItemDAO;
 import ar.edu.unq.unidad3.modelo.Item;
+import ar.edu.unq.unidad3.persistencia.dao.ItemDAO;
 import ar.edu.unq.unidad3.service.runner.HibernateSessionContext;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -15,11 +15,20 @@ public class HibernateItemDAO extends HibernateDAO<Item> implements ItemDAO {
     }
 
     @Override
-    public Collection<Item> getAll() {
+    public Collection<Item> recuperarTodos() {
         Session session = HibernateSessionContext.getCurrentSession();
         String hql = "select i from Item i order by i.peso asc";
         Query<Item> query = session.createQuery(hql, Item.class);
         return query.getResultList();
+    }
+
+    @Override
+    public Item getMasPesado() {
+        Session session = HibernateSessionContext.getCurrentSession();
+        String hql = "from Item i order by i.peso desc";
+        Query<Item> query = session.createQuery(hql, Item.class);
+        query.setMaxResults(1);
+        return query.getSingleResult();
     }
 
     @Override
@@ -34,18 +43,9 @@ public class HibernateItemDAO extends HibernateDAO<Item> implements ItemDAO {
     @Override
     public Collection<Item> getItemsDePersonajesDebiles(int unaVida) {
         Session session = HibernateSessionContext.getCurrentSession();
-        String hql = "from Item i where i.owner.vida < :unaVida order by i.peso asc";
+        String hql = "from Item i where i.poseedor.vida < :unaVida order by i.peso asc";
         Query<Item> query = session.createQuery(hql, Item.class);
         query.setParameter("unaVida", unaVida);
         return query.getResultList();
-    }
-
-    @Override
-    public Item getHeaviestItem() {
-        Session session = HibernateSessionContext.getCurrentSession();
-        String hql = "from Item i order by i.peso desc";
-        Query<Item> query = session.createQuery(hql, Item.class);
-        query.setMaxResults(1);
-        return query.getSingleResult();
     }
 }

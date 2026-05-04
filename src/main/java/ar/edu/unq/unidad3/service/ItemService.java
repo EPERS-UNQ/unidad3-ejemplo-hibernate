@@ -6,14 +6,21 @@ import java.util.Collection;
 
 public interface ItemService {
 
-    void guardarItem(Item item);
-    Collection<Item> allItems();
-    void eliminarItem(Item item);
+    void crear(Item item);
+
+    void actualizar(Item item);
+
+    Item recuperar(Long itemId);
+
+    Collection<Item> recuperarTodos();
+
+    void eliminar(Item item);
+
     void eliminarTodos();
-    Item heaviestItem();
-    Collection<Item> getMasPesdos(int peso);
+
+    Item getMasPesado();
+
+    Collection<Item> getMasPesados(int peso);
+
     Collection<Item> getItemsPersonajesDebiles(int vida);
-
 }
-
-
